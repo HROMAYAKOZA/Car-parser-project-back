@@ -1,1 +1,1 @@
-print("Hello, World!\nThis is stable branch bersion")
+print("Hello, World!\nThis is dev branch bersion")
