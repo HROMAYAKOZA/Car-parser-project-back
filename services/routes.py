@@ -3,7 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 
 from services import app, db
-from services.models import Users
+from services.models import Users, Brand, Model
+from services.pDrom import edit_url, get_info, get_full_info
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -73,8 +74,29 @@ def redirect_to_signin(response):
     return response
 
 
-@app.route('/<username>', methods=['POST', 'GET'])
+@app.route('/<username>', methods=['GET'])
 @login_required
 def user_page(username):
-    nickname = current_user.nickname
-    return render_template('account.html')
+    transmissions = ['Auto', 'Mechanics']
+    cities = ['Moscow', 'Blagoveshchensk']
+    return render_template('account.html',
+                           brands=Brand.query.all(),
+                           transmissions=transmissions,
+                           models=Model.query.all(),
+                           cities=cities)
+
+
+@app.route('/search_car', methods=['POST'])
+@login_required
+def search_car():
+    brand = request.form.get('brand').lower()
+    model = request.form.get('model').lower()
+    city = request.form.get('city').lower()
+    price_from = request.form.get('price_from')
+    price_to = request.form.get('price_to')
+    b = dict(brand=brand, model=model, city=city, price_from=price_from, price_to=price_to)
+    url = edit_url(b) + "page1"
+    print(url)
+    return render_template('info.html', mmm=get_full_info(url))
+
+

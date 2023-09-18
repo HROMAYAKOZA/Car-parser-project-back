@@ -8,5 +8,48 @@
 <h1>{% if current_user.is_authenticated %}
   Hello, {{ current_user.nickname }}!
     {% endif %}</h1>
+<form action="/search_car" method='POST'>
+    <table>
+		<tr>
+			<td>
+                <select name="brand">
+                    {% for brand in brands %}
+                        <option value="{{brand.brand}}">
+                            {{ brand.brand }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <select name="model">
+                    {% for model in models %}
+                        <option value="{{model.model}}">{{model.model}}</option>
+                    {% endfor %}
+                    <option value="All">All</option>
+                </select>
+            </td>
+		</tr>
+        <tr>
+			<td>
+                <select name="city">
+                    {% for city in cities %}
+                        <option value="{{city}}">{{city}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+		</tr>
+        <tr>
+            <td>Price:
+                <input type="text" placeholder="from" name="price_from">
+                <input type="text" placeholder="to" name="price_to">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <button type="submit">Compare</button>
+            </td>
+        </tr>
+	</table>
+</form>
+
 </body>
 </html>

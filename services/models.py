@@ -14,6 +14,24 @@ from services import db, manager
 #     price = db.Column(db.String(128), nullable=False)
 
 
+class Brand(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String(128), nullable=False)
+
+    def __init__(self, brand, models):
+        self.brand = brand.strip()
+        self.models = [
+            Model(model=model.strip()) for model in models.split(',')
+        ]
+
+
+class Model(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(256), nullable=False)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
+    brand = db.relationship('Brand', backref=db.backref('models', lazy=True))
+
+
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(128), nullable=False)
