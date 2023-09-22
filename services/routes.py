@@ -4,7 +4,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from services import app, db
 from services.models import Users, Brand, Model
-from services.pDrom import edit_url, get_info, get_full_info
+from services.pDrom import edit_url, get_full_info
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -95,8 +95,5 @@ def search_car():
     price_from = request.form.get('price_from')
     price_to = request.form.get('price_to')
     b = dict(brand=brand, model=model, city=city, price_from=price_from, price_to=price_to)
-    url = edit_url(b) + "page1"
-    print(url)
-    return render_template('info.html', mmm=get_full_info(url))
-
-
+    ads = get_full_info(edit_url(b))
+    return render_template('info.html', ads=ads)

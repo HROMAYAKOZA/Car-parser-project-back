@@ -8,14 +8,14 @@
     <title>Info</title>
 </head>
 <body>
-{% for m in mmm %}
-    <h2><div>Car : {{ m[0] }}</div></h2>
-    <div>Price : {{ m[2] }}</div>
-    <div>City : {{ m[3] }}</div>
-    <div>Motor : {{ m[4] }}</div>
-    <div>Transmission : {{ m[5] }}</div>
-    <div>Drive : {{ m[6] }}</div>
-    <div>Advertisement : <a href="{{m[1]}}">{{ m[1] }}</a></div>
+{% for ad in ads %}
+    <h2><div>Car : {{ ad[0] }}</div></h2>
+    <div>Price : {{ ad[2] }}</div>
+    <div>City : {{ ad[3] }}</div>
+    <div>Motor : {{ ad[4] }}</div>
+    <div>Transmission : {{ ad[5] }}</div>
+    <div>Drive : {{ ad[6] }}</div>
+    <div>Advertisement : <a href="{{ad[1]}}">{{ ad[1] }}</a></div>
     <div> --------------------------------------------------- </div>
 {% endfor %}
 </body>

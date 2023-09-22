@@ -68,32 +68,19 @@ def get_full_info(url: str) -> list:
 
 def edit_url(info: dict[str, str]) -> str:
     if info.get("price_from") != "" and info.get("price_to") != "":
-        return "https://{}.drom.ru/{}/{}/?minprice={}&maxprice={}".format(info.get("city"),
+        return "https://{}.drom.ru/{}/{}/page1/?minprice={}&maxprice={}".format(info.get("city"),
                                                                           info.get("brand"),
                                                                           info.get("model"),
                                                                           info.get("price_from"),
                                                                           info.get("price_to"))
     elif info.get("price_from") != "":
-        return "https://{}.drom.ru/{}/{}/?minprice={}".format(info.get("city"),
+        return "https://{}.drom.ru/{}/{}/page1/?minprice={}".format(info.get("city"),
                                                               info.get("brand"),
                                                               info.get("model"),
                                                               info.get("price_from"))
     elif info.get("price_to") != "":
-        return "https://{}.drom.ru/{}/{}/?maxprice={}".format(info.get("city"),
+        return "https://{}.drom.ru/{}/{}/page1/?maxprice={}".format(info.get("city"),
                                                               info.get("brand"),
                                                               info.get("model"),
                                                               info.get("price_to"))
-    return "https://{}.drom.ru/{}/{}/".format(info.get("city"), info.get("brand"), info.get("model"))
-
-
-# get_full_info("https://moscow.drom.ru/toyota/all/page1")
-# for i in get_full_info("https://moscow.drom.ru/toyota/all/page1"):
-#     print(i)
-# print(edit_url("moscow", "bmw", "m4"))
-# b = dict(brand='BMW'.lower(),
-#          model='M4'.lower(),
-#          transmission="Auto".lower(),
-#          city="Moscow".lower(),
-#          price_from="",
-#          price_to="")
-# print(edit_url(b))
+    return "https://{}.drom.ru/{}/{}/page1/".format(info.get("city"), info.get("brand"), info.get("model"))
