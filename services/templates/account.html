@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account</title>
 </head>
 <body>
 <h1>{% if current_user.is_authenticated %}
-  Hello, {{ current_user.nickname }}!
+  Здравствуйте, {{ current_user.nickname }}!
     {% endif %}</h1>
 <form action="/search_car" method='POST'>
     <table>
@@ -20,10 +19,10 @@
                     {% endfor %}
                 </select>
                 <select name="model">
+                    <option value="All">Все</option>
                     {% for model in models %}
                         <option value="{{model.model}}">{{model.model}}</option>
                     {% endfor %}
-                    <option value="All">All</option>
                 </select>
             </td>
 		</tr>
@@ -37,15 +36,15 @@
             </td>
 		</tr>
         <tr>
-            <td>Price:
-                <input type="text" placeholder="from" name="price_from">
-                <input type="text" placeholder="to" name="price_to">
+            <td>Цена:
+                <input type="text" placeholder="от" name="price_from">
+                <input type="text" placeholder="до" name="price_to">
             </td>
         </tr>
 
         <tr>
             <td>
-                <button type="submit">Compare</button>
+                <button type="submit">Найти</button>
             </td>
         </tr>
 	</table>

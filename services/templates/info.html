@@ -5,17 +5,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Info</title>
 </head>
 <body>
 {% for ad in ads %}
-    <h2><div>Car : {{ ad[0] }}</div></h2>
-    <div>Price : {{ ad[2] }}</div>
-    <div>City : {{ ad[3] }}</div>
-    <div>Motor : {{ ad[4] }}</div>
-    <div>Transmission : {{ ad[5] }}</div>
-    <div>Drive : {{ ad[6] }}</div>
-    <div>Advertisement : <a href="{{ad[1]}}">{{ ad[1] }}</a></div>
+    <h2><div>{{ ad[0] }}</div></h2>
+    <div>Цена : {{ ad[2] }}</div>
+    <div>Город : {{ ad[3] }}</div>
+    <div>Пробег : {{ ad[7] }}</div>
+    <div>Двигатель : {{ ad[4] }}</div>
+    <div>Коробка передач : {{ ad[5] }}</div>
+    <div>Привод : {{ ad[6] }}</div>
+    <div>Ссылка на объявление : <a href="{{ad[1]}}">{{ ad[1] }}</a></div>
     <div> --------------------------------------------------- </div>
 {% endfor %}
 </body>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
+    <title>Регистрация</title>
 </head>
 <body>
 
@@ -10,7 +10,7 @@
   {% if messages %}
     <ul class=flashes>
     {% for message in messages %}
-      <li style="color:#FF0000">{{ message }}</li>
+      <a style="color:#FF0000">{{ message }}</a>
     {% endfor %}
     </ul>
   {% endif %}
@@ -19,40 +19,40 @@
 <form method="post">
 	<table>
 		<tr>
-			<td>Nickname</td>
+			<td>Как к вам обращаться? :)</td>
 			<td><input type="text"
 					   name="nickname"
 					   minlength="3"
-					   maxlength="8"
-					   size="8"></td>
+					   maxlength="40"
+					   size="10"></td>
 		</tr>
 		<tr>
-			<td>Login</td>
+			<td>Логин</td>
 			<td><input type="text"
                    name="login"
                    minlength="6"
-                   maxlength="8"
-                   size="8"></td>
+                   maxlength="10"
+                   size="10"></td>
 		</tr>
 		<tr>
-			<td>Password</td>
+			<td>Пароль</td>
 			<td><input type="password"
                    name="password"
                    minlength="6"
-                   maxlength="8"
-                   size="8"></td>
+                   maxlength="10"
+                   size="10"></td>
 		</tr>
         <tr>
-			<td>Password retype</td>
+			<td>Повторите пароль</td>
 			<td><input type="password"
                    name="password2"
                    minlength="6"
-                   maxlength="8"
-                   size="8"></td>
+                   maxlength="10"
+                   size="10"></td>
 		</tr>
 		<tr>
-			<td><a href="{{ url_for('login_page')}}">Login</a></td>
-			<td><input type="submit" value="Registration"></td>
+			<td><a href="{{ url_for('login_page')}}">Войти</a></td>
+			<td><input type="submit" value="Зарегистрироваться"></td>
 		</tr>
 	</table>
 </form>

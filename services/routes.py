@@ -27,10 +27,10 @@ def login_page():
             else:
                 return redirect(url_for("user_page", username=current_user.nickname))
         else:
-            flash("Login or password is not correct")
+            flash("Неверный логин или пароль")
 
     else:
-        flash("Please fill login and password")
+        flash("Пожалуйста, введите логин и пароль")
 
     return render_template('login.html')
 
@@ -43,19 +43,23 @@ def registration():
     password2 = request.form.get('password2')
     if request.method == 'POST':
         if not (password or password2 or login or nickname):
-            flash("Please fill all fields")
+            flash("Пожалуйста, заполните все поля")
         elif password != password2:
-            flash("Passwords are not equal")
+            flash("Пароли не совпадают")
         else:
-            if ' ' in list(nickname):
-                flash("Nickname must not contain a space")
+            if ' ' in list(login):
+                flash("Логин не должен содержать пробела")
             else:
-                hash_password = generate_password_hash(password)
-                newUser = Users(nickname=nickname, login=login, password=hash_password)
-                db.session.add(newUser)
-                db.session.commit()
+                user = Users.query.filter_by(login=login).first()
+                if user:
+                    flash("Этот логин уже занят")
+                else:
+                    hash_password = generate_password_hash(password)
+                    newUser = Users(nickname=nickname, login=login, password=hash_password)
+                    db.session.add(newUser)
+                    db.session.commit()
 
-                return redirect(url_for('login_page'))
+                    return redirect(url_for('login_page'))
 
     return render_template('registration.html')
 
@@ -78,7 +82,7 @@ def redirect_to_signin(response):
 @login_required
 def user_page(username):
     transmissions = ['Auto', 'Mechanics']
-    cities = ['Moscow', 'Blagoveshchensk']
+    cities = ['Moscow', 'SPB', 'Blagoveshchensk']
     return render_template('account.html',
                            brands=Brand.query.all(),
                            transmissions=transmissions,
@@ -96,4 +100,5 @@ def search_car():
     price_to = request.form.get('price_to')
     b = dict(brand=brand, model=model, city=city, price_from=price_from, price_to=price_to)
     ads = get_full_info(edit_url(b))
+    print(edit_url(b))
     return render_template('info.html', ads=ads)

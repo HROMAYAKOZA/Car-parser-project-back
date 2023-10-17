@@ -38,6 +38,7 @@ def get_info(url: str) -> list:
             motor = "{},{}".format(components[0], components[1])
             transmission = components[2].strip()
             wd = components[3].strip()
+            km = components[4].strip()
 
             href = car.get("href").strip()
             price = unicodedata.normalize("NFKD", "{}₽".format(car
@@ -46,7 +47,7 @@ def get_info(url: str) -> list:
                                                                .text))
             city = car.find('div', class_="css-1x4jcds eotelyr0").find('span').text
 
-            info.append([name, href, price, city, motor, transmission, wd])
+            info.append([name, href, price, city, motor, transmission, wd, km])
         except:
             pass
     return info
@@ -69,18 +70,18 @@ def get_full_info(url: str) -> list:
 def edit_url(info: dict[str, str]) -> str:
     if info.get("price_from") != "" and info.get("price_to") != "":
         return "https://{}.drom.ru/{}/{}/page1/?minprice={}&maxprice={}".format(info.get("city"),
-                                                                          info.get("brand"),
-                                                                          info.get("model"),
-                                                                          info.get("price_from"),
-                                                                          info.get("price_to"))
+                                                                                info.get("brand"),
+                                                                                info.get("model"),
+                                                                                info.get("price_from"),
+                                                                                info.get("price_to"))
     elif info.get("price_from") != "":
         return "https://{}.drom.ru/{}/{}/page1/?minprice={}".format(info.get("city"),
-                                                              info.get("brand"),
-                                                              info.get("model"),
-                                                              info.get("price_from"))
+                                                                    info.get("brand"),
+                                                                    info.get("model"),
+                                                                    info.get("price_from"))
     elif info.get("price_to") != "":
         return "https://{}.drom.ru/{}/{}/page1/?maxprice={}".format(info.get("city"),
-                                                              info.get("brand"),
-                                                              info.get("model"),
-                                                              info.get("price_to"))
+                                                                    info.get("brand"),
+                                                                    info.get("model"),
+                                                                    info.get("price_to"))
     return "https://{}.drom.ru/{}/{}/page1/".format(info.get("city"), info.get("brand"), info.get("model"))
