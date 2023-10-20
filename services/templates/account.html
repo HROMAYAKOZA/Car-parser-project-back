@@ -13,15 +13,15 @@
 			<td>
                 <select name="brand">
                     {% for brand in brands %}
-                        <option value="{{brand.brand}}">
-                            {{ brand.brand }}
+                        <option value="{{brand}}">
+                            {{ brand }}
                         </option>
                     {% endfor %}
                 </select>
                 <select name="model">
                     <option value="All">Все</option>
                     {% for model in models %}
-                        <option value="{{model.model}}">{{model.model}}</option>
+                        <option value="{{model}}">{{model}}</option>
                     {% endfor %}
                 </select>
             </td>

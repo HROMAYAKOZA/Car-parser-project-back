@@ -2,9 +2,9 @@ from flask import render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 
-from __init__ import app, db
-from models import Users, Brand, Model
-from advertisement import sorted_selectFromADS
+from services import app, db
+from services.models import Users, Advertisement
+from services.advertisement import sorted_selectFromADS
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -82,11 +82,19 @@ def redirect_to_signin(response):
 @login_required
 def user_page(username):
     transmissions = ['Auto', 'Mechanics']
-    cities = ['Москва', 'Санкт-Петербург', 'Балашиха', 'Благовещенск']
+    cities = []
+    brands = []
+    models = []
+    for ad in Advertisement.query.all():
+        if not(ad.city in cities):
+            cities.append(ad.city)
+        if not(ad.brand in brands):
+            brands.append(ad.brand)
+        if not(ad.model in models):
+            models.append(ad.model)
     return render_template('account.html',
-                           brands=Brand.query.all(),
-                           transmissions=transmissions,
-                           models=Model.query.all(),
+                           brands=brands,
+                           models=models,
                            cities=cities)
 
 

@@ -40,8 +40,9 @@ def get_info(url: str) -> list:
                                                                .find('span')
                                                                .text))
             price = ''.join(e for e in price if e.isalnum())
-            city = car.find('div', class_="css-1x4jcds eotelyr0").find('span').text
-
+            city = str(car.find('div', class_="css-1x4jcds eotelyr0").find('span').text)
+            if ' ' in city:
+                city = city.split(' ')[0]
             info.append([brand, model, year, price, city, motor, transmission, wd, km, href])
         except:
             pass
@@ -61,4 +62,3 @@ def get_full_info(url: str) -> list:
             full_info.append(p)
     # print(full_info)
     return full_info
-

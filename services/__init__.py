@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_apscheduler import APScheduler
-from settings import postgresql_password, secret_key
+from services.settings import postgresql_password, secret_key
 
 
 app = Flask(__name__)
@@ -13,5 +13,6 @@ db = SQLAlchemy(app)
 manager = LoginManager(app)
 scheduler = APScheduler()
 
+from services import models, routes
 with app.app_context():
     db.create_all()
