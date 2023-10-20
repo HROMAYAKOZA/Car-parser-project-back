@@ -1,17 +1,20 @@
 from flask_login import UserMixin
 
-from services import db, manager
+from __init__ import app, db, manager
 
 
-# class Advertisement(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     brand = db.Column(db.String(128), nullable=False)
-#     model = db.Column(db.String(128), nullable=False)
-#     transmission = db.Column(db.String(128), nullable=False)
-#     drive = db.Column(db.String(128), nullable=False)
-#     body_type = db.Column(db.String(128), nullable=False)
-#     color = db.Column(db.String(128), nullable=False)
-#     price = db.Column(db.String(128), nullable=False)
+class Advertisement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String(128), nullable=False)
+    model = db.Column(db.String(128), nullable=False)
+    year = db.Column(db.String(128), nullable=False)
+    price = db.Column(db.String(128), nullable=False)
+    city = db.Column(db.String(128), nullable=False)
+    motor = db.Column(db.String(128), nullable=False)
+    transmission = db.Column(db.String(128), nullable=False)
+    wd = db.Column(db.String(128), nullable=False)
+    km = db.Column(db.String(128), nullable=False)
+    href = db.Column(db.String(256), nullable=False)
 
 
 class Brand(db.Model):
@@ -23,6 +26,14 @@ class Brand(db.Model):
         self.models = [
             Model(model=model.strip()) for model in models.split(',')
         ]
+
+#
+# brands = ["Toyota", "Nissan", "Honda", "Mazda", "BMW", "Mercedes-Benz"]
+#
+# for brand in brands:
+#     newBrand = Brand(brand=brand)
+#     db.session.add(newBrand)
+#     db.session.commit()
 
 
 class Model(db.Model):

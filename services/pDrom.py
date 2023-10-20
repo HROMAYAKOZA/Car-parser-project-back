@@ -5,16 +5,6 @@ import requests
 from requests import Response
 
 
-def create_info(name, href, price, city, components: str) -> str:
-    data = components.split(',')
-    return "\n{0} ({2}):" \
-           "\n\tЦена: {1}" \
-           "\n\tГород: {3}" \
-           "\n\tДвигатель: {4}, {5} " \
-           "\n\tКоробкак передач: {6} " \
-           "\n\tПривод: {7}".format(name, price, href, city, data[0], data[1], data[2], data[3])
-
-
 def create_html(url: str) -> Response:
     html_code = requests.get(url)
     # print("-------------------------------------------------------\n"
@@ -29,6 +19,10 @@ def get_info(url: str) -> list:
     for car in allCars:
         try:
             name = car.find('div', class_="css-1wgtb37 e3f4v4l2").find('span').text
+            name = name.split(' ')
+            brand = name[0]
+            model = ''.join(e for e in name[1] if e.isalnum())
+            year = name[2]
             specifications = car.find("div", class_="css-1fe6w6s e162wx9x0").find_all("span")
             components = ""
 
@@ -45,11 +39,13 @@ def get_info(url: str) -> list:
                                                                .find('span', class_="css-46itwz e162wx9x0")
                                                                .find('span')
                                                                .text))
+            price = ''.join(e for e in price if e.isalnum())
             city = car.find('div', class_="css-1x4jcds eotelyr0").find('span').text
 
-            info.append([name, href, price, city, motor, transmission, wd, km])
+            info.append([brand, model, year, price, city, motor, transmission, wd, km, href])
         except:
             pass
+    # print(info)
     return info
 
 
@@ -66,22 +62,3 @@ def get_full_info(url: str) -> list:
     # print(full_info)
     return full_info
 
-
-def edit_url(info: dict[str, str]) -> str:
-    if info.get("price_from") != "" and info.get("price_to") != "":
-        return "https://{}.drom.ru/{}/{}/page1/?minprice={}&maxprice={}".format(info.get("city"),
-                                                                                info.get("brand"),
-                                                                                info.get("model"),
-                                                                                info.get("price_from"),
-                                                                                info.get("price_to"))
-    elif info.get("price_from") != "":
-        return "https://{}.drom.ru/{}/{}/page1/?minprice={}".format(info.get("city"),
-                                                                    info.get("brand"),
-                                                                    info.get("model"),
-                                                                    info.get("price_from"))
-    elif info.get("price_to") != "":
-        return "https://{}.drom.ru/{}/{}/page1/?maxprice={}".format(info.get("city"),
-                                                                    info.get("brand"),
-                                                                    info.get("model"),
-                                                                    info.get("price_to"))
-    return "https://{}.drom.ru/{}/{}/page1/".format(info.get("city"), info.get("brand"), info.get("model"))

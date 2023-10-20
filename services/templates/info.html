@@ -8,14 +8,14 @@
 </head>
 <body>
 {% for ad in ads %}
-    <h2><div>{{ ad[0] }}</div></h2>
-    <div>Цена : {{ ad[2] }}</div>
-    <div>Город : {{ ad[3] }}</div>
-    <div>Пробег : {{ ad[7] }}</div>
-    <div>Двигатель : {{ ad[4] }}</div>
-    <div>Коробка передач : {{ ad[5] }}</div>
-    <div>Привод : {{ ad[6] }}</div>
-    <div>Ссылка на объявление : <a href="{{ad[1]}}">{{ ad[1] }}</a></div>
+    <h2><div>{{ "{0} {1} {2}".format(ad.brand, ad.model, ad.year) }}</div></h2>
+    <div>Цена : {{ ad.price }} ₽</div>
+    <div>Город : {{ ad.city }}</div>
+    <div>Пробег : {{ ad.km }}</div>
+    <div>Двигатель : {{ ad.motor }}</div>
+    <div>Коробка передач : {{ ad.transmission }}</div>
+    <div>Привод : {{ ad.wd }}</div>
+    <div>Ссылка на объявление : <a href="{{ad.href}}">{{ ad.href }}</a></div>
     <div> --------------------------------------------------- </div>
 {% endfor %}
 </body>
