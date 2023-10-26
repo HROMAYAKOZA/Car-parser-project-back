@@ -8,29 +8,30 @@ from services.advertisement import sorted_selectFromADS
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello_world():
-    return render_template('index.html')
+def hello_world() -> str:
+    return ""
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_page():
-    login = request.form.get('login')
-    password = request.form.get('password')
-    if login and password:
-        user = Users.query.filter_by(login=login).first()
-        if user and check_password_hash(user.password, password):
-            login_user(user)
+    if request.method == 'POST':
+        login = request.form.get('login')
+        password = request.form.get('password')
+        if login and password:
+            user = Users.query.filter_by(login=login).first()
+            if user and check_password_hash(user.password, password):
+                login_user(user)
 
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
+                next_page = request.args.get('next')
+                if next_page:
+                    return redirect(next_page)
+                else:
+                    return redirect(url_for("user_page", username=current_user.nickname))
             else:
-                return redirect(url_for("user_page", username=current_user.nickname))
-        else:
-            flash("Неверный логин или пароль")
+                flash("Неверный логин или пароль")
 
-    else:
-        flash("Пожалуйста, введите логин и пароль")
+        else:
+            flash("Пожалуйста, введите логин и пароль")
 
     return render_template('login.html')
 
@@ -86,11 +87,11 @@ def user_page(username):
     brands = []
     models = []
     for ad in Advertisement.query.all():
-        if not(ad.city in cities):
+        if not (ad.city in cities):
             cities.append(ad.city)
-        if not(ad.brand in brands):
+        if not (ad.brand in brands):
             brands.append(ad.brand)
-        if not(ad.model in models):
+        if not (ad.model in models):
             models.append(ad.model)
     return render_template('account.html',
                            brands=brands,
