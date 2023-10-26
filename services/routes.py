@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-
+#flask --app flask_app run
 from services import app, db
 from services.models import Users, Advertisement
 from services.advertisement import sorted_selectFromADS
