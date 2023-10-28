@@ -12,33 +12,25 @@ def hello_world() -> str:
     return ""
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login_page():
+    result = {'message' : '', 'username' : ''}
     if request.method == "POST":
-        jsonData = request.get_json()
-        print(jsonData)
-        return {
-            'response': 'I am the response'
-        }
-    # login = request.form.get('name')
-    # password = request.form.get('password')
-    # if login and password:
-    #     user = Users.query.filter_by(login=login).first()
-    #     if user and check_password_hash(user.password, password):
-    #         login_user(user)
-    #
-    #         next_page = request.args.get('next')
-    #         if next_page:
-    #             return redirect(next_page)
-    #         else:
-    #             return redirect(url_for("user_page", username=current_user.nickname))
-    #     else:
-    #         flash("Неверный логин или пароль")
-    #
-    # else:
-    #     flash("Пожалуйста, введите логин и пароль")
+        login = request.form.get('login')
+        password = request.form.get('password')
+        if login and password:
+            user = Users.query.filter_by(login=login).first()
+            if user and check_password_hash(user.password, password):
+                login_user(user)
+                result['username'] = current_user.nickname
+            else:
+                result['message'] = "Неверный логин или пароль"
+        else:
+            result['message'] = "Пожалуйста, введите логин и пароль"
+    elif request.method == "GET":
+        return result
 
-    # return render_template('login.html')
+
 
 
 @app.route('/registration', methods=['POST', 'GET'])
