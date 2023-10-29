@@ -1,7 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-#flask --app flask_app run
 from services import app, db
 from services.models import Users, Advertisement
 from services.advertisement import sorted_selectFromADS
@@ -14,52 +13,50 @@ def hello_world() -> str:
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_page():
-    result = {'message' : '', 'username' : ''}
-    if request.method == "POST":
-        login = request.form.get('login')
-        password = request.form.get('password')
-        if login and password:
-            user = Users.query.filter_by(login=login).first()
-            if user and check_password_hash(user.password, password):
-                login_user(user)
-                result['username'] = current_user.nickname
-            else:
-                result['message'] = "Неверный логин или пароль"
+    result = {'message': '', 'username': ''}
+    login = request.form.get('login')
+    password = request.form.get('password')
+    if login and password:
+        user = Users.query.filter_by(login=login).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            result['username'] = current_user.nickname
         else:
-            result['message'] = "Пожалуйста, введите логин и пароль"
-    elif request.method == "GET":
-        return result
-
-
+            result['message'] = "Неверный логин или пароль"
+    else:
+        result['message'] = "Пожалуйста, введите логин и пароль"
+    print("{0}  {1}".format(login, password))
+    return result
 
 
 @app.route('/registration', methods=['POST', 'GET'])
 def registration():
+    result = {'message': '', 'username': ''}
     nickname = request.form.get('nickname')
     login = request.form.get('login')
     password = request.form.get('password')
     password2 = request.form.get('password2')
-    if request.method == 'POST':
-        if not (password or password2 or login or nickname):
-            flash("Пожалуйста, заполните все поля")
-        elif password != password2:
-            flash("Пароли не совпадают")
+
+    if not (password or password2 or login or nickname):
+        result['message'] = "Пожалуйста, заполните все поля"
+    elif password != password2:
+        result['message'] = "Пароли не совпадают"
+    else:
+        if ' ' in list(login):
+            result['message'] = "Логин не должен содержать пробела"
         else:
-            if ' ' in list(login):
-                flash("Логин не должен содержать пробела")
+            user = Users.query.filter_by(login=login).first()
+            if user:
+                result['message'] = "Этот логин уже занят"
             else:
-                user = Users.query.filter_by(login=login).first()
-                if user:
-                    flash("Этот логин уже занят")
-                else:
-                    hash_password = generate_password_hash(password)
-                    newUser = Users(nickname=nickname, login=login, password=hash_password)
-                    db.session.add(newUser)
-                    db.session.commit()
+                result['username'] = nickname
+                hash_password = generate_password_hash(password)
+                newUser = Users(nickname=nickname, login=login, password=hash_password)
+                db.session.add(newUser)
+                db.session.commit()
 
-                    return redirect(url_for('login_page'))
-
-    return render_template('registration.html')
+    print("{2} : {0}  {1}".format(login, password, nickname))
+    return result
 
 
 @app.route('/logout', methods=['POST', 'GET'])
