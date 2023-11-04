@@ -7,7 +7,7 @@ from services.advertisement import sorted_selectFromADS
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello_world() -> str:
+def main() -> str:
     return ""
 
 
@@ -73,7 +73,7 @@ def redirect_to_signin(response):
     return response
 
 
-@app.route('/<username>', methods=['GET'])
+@app.route('/account', methods=['GET'])
 @login_required
 def user_page(username):
     transmissions = ['Auto', 'Mechanics']
@@ -87,10 +87,8 @@ def user_page(username):
             brands.append(ad.brand)
         if not (ad.model in models):
             models.append(ad.model)
-    return render_template('account.html',
-                           brands=brands,
-                           models=models,
-                           cities=cities)
+    info = {"brands": brands, "models": models, "cities": cities}
+    return info
 
 
 @app.route('/search_car', methods=['POST'])
@@ -102,4 +100,4 @@ def search_car():
     price_from = request.form.get('price_from')
     price_to = request.form.get('price_to')
     ads = sorted_selectFromADS(brand, model, city, price_from, price_to)
-    return render_template('info.html', ads=ads)
+    return ads
