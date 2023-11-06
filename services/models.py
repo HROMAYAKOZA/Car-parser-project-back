@@ -1,5 +1,4 @@
 from flask_login import UserMixin
-from sqlalchemy.dialects.postgresql import Any
 
 from services import db, manager
 
@@ -28,6 +27,6 @@ class Users(db.Model, UserMixin):
 
 
 @manager.user_loader
-def load_user(user_id) -> Any | None:
+def load_user(user_id):
     """Initializer of the user table"""
     return Users.query.get(user_id)
