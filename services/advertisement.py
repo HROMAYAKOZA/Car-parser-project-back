@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 from sqlalchemy import Integer
 from services.models import Advertisement
-from services.pDrom import create_html, get_info
+from services.pDrom import create_html, get_infoDrom
 from services import app, db
 
 msk = ["https://moscow.drom.ru/toyota/camry/page1/", "https://moscow.drom.ru/toyota/corolla/page1/",
@@ -41,6 +41,7 @@ cities = [blg, bal, msk, spb]
 
 
 def sorted_selectFromADS(brand, model, city, price_from, price_to) -> list:
+    """This function **selects the database fields** that match the input data"""
     ads = []
     if model != "All":
         if price_from and price_to:
@@ -80,31 +81,36 @@ def sorted_selectFromADS(brand, model, city, price_from, price_to) -> list:
     return ads
 
 
-def insert_ad_from_drom(city, hmta):
-    count = 0
-    for url in city:
-        ads = get_info(url)
-        for ad in ads:
-            advert = Advertisement.query.filter_by(href=ad[9]).first()
-            if not advert and count < hmta:
-                newAd = Advertisement(brand=ad[0], model=ad[1], year=ad[2], price=ad[3], city=ad[4], motor=ad[5],
-                                      transmission=ad[6], wd=ad[7], km=ad[8], href=ad[9])
-                db.session.add(newAd)
-                db.session.commit()
-                count += 1
-            else:
-                break
+def insert_ad_from_drom(city_list, hmta) -> None:
+    """This function **adds ads with drom.ru** to the database using the function  *pDrom.py/get_infoDrom()*
+    \n(called once when the server starts)"""
+    for city in city_list:
         count = 0
-        continue
+        for url in city:
+            ads = get_infoDrom(url)
+            for ad in ads:
+                advert = Advertisement.query.filter_by(href=ad[9]).first()
+                if not advert and count < hmta:
+                    newAd = Advertisement(brand=ad[0], model=ad[1], year=ad[2], price=ad[3], city=ad[4], motor=ad[5],
+                                          transmission=ad[6], wd=ad[7], km=ad[8], href=ad[9])
+                    db.session.add(newAd)
+                    db.session.commit()
+                    count += 1
+                else:
+                    break
+            count = 0
+            continue
 
 
-def get_statusDS_drom(html: Response):
+def get_statusDS_drom(html: Response) -> BeautifulSoup:
+    """This is the function of **checking the ad for relevance**"""
     soup = BeautifulSoup(html.text, "html.parser")
     status = soup.find("div", class_="e1jb3i2p0 css-14asbju e1u9wqx22")
     return status
 
 
-def updatingADS():
+def updatingADS() -> None:
+    """This function **removes** out-of-date ads and **replaces** them with up-to-date ones"""
     app.app_context().push()
     ads = Advertisement.query.all()
     for ad in ads:
@@ -125,11 +131,3 @@ def updatingADS():
         except:
             db.session.delete(url)
             db.session.commit()
-
-
-def insert_tableADS(city_list: list):
-    for city in city_list:
-        insert_ad_from_drom(city, 3)
-
-
-# insert_tableADS(cities)

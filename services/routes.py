@@ -1,6 +1,6 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import request
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, current_user
 from services import app, db
 from services.models import Users, Advertisement
 from services.advertisement import sorted_selectFromADS
@@ -12,7 +12,9 @@ def main() -> str:
 
 
 @app.route('/login', methods=['POST', 'GET'])
-def login_page():
+def login_page() -> dict:
+    """Returns a dictionary with an **error message** and the **username** of the user.\n
+     If the error message **is empty** in the dictionary,then the user is **transferred to his account**"""
     result = {'message': '', 'username': ''}
     login = request.form.get('login')
     password = request.form.get('password')
@@ -30,7 +32,9 @@ def login_page():
 
 
 @app.route('/registration', methods=['POST', 'GET'])
-def registration():
+def registration() -> dict:
+    """Returns a **dictionary** with an **error message** and the **username** of the user.\n
+    If the error message **is empty** in the dictionary, then the user is **successfully registered**"""
     result = {'message': '', 'username': ''}
     nickname = request.form.get('nickname')
     login = request.form.get('login')
@@ -59,23 +63,11 @@ def registration():
     return result
 
 
-@app.route('/logout', methods=['POST', 'GET'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('hello_world'))
-
-
-@app.after_request
-def redirect_to_signin(response):
-    if response.status_code == 401:
-        return redirect(url_for('login_page') + '?next=' + request.url)
-    return response
-
-
 @app.route('/account', methods=['GET'])
 @login_required
-def user_page(username):
+def user_page(username) -> dict:
+    """Returns a dictionary in which the **key is a parameter**,
+    and the **value is a list** from which you can select a variant of this parameter"""
     transmissions = ['Auto', 'Mechanics']
     cities = []
     brands = []
@@ -93,7 +85,9 @@ def user_page(username):
 
 @app.route('/search_car', methods=['POST'])
 @login_required
-def search_car():
+def search_car() -> list:
+    """This function processes **all parameters** entered by the user
+     and **outputs information corresponding to these parameters**"""
     brand = request.form.get('brand')
     model = request.form.get('model')
     city = request.form.get('city')
