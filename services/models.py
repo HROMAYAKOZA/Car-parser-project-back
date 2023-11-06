@@ -1,9 +1,11 @@
 from flask_login import UserMixin
+from sqlalchemy.dialects.postgresql import Any
 
 from services import db, manager
 
 
 class Advertisement(db.Model):
+    """This class is an advertisement table"""
     id = db.Column(db.Integer, primary_key=True)
     brand = db.Column(db.String(128), nullable=False)
     model = db.Column(db.String(128), nullable=False)
@@ -18,6 +20,7 @@ class Advertisement(db.Model):
 
 
 class Users(db.Model, UserMixin):
+    """This class is a users table"""
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(128), nullable=False)
     login = db.Column(db.String(256), nullable=False, unique=True)
@@ -25,5 +28,6 @@ class Users(db.Model, UserMixin):
 
 
 @manager.user_loader
-def load_user(user_id):
+def load_user(user_id) -> Any | None:
+    """Initializer of the user table"""
     return Users.query.get(user_id)
