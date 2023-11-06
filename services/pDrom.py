@@ -8,8 +8,6 @@ from requests import Response
 def create_html(url: str) -> Response:
     """This function creates the **html code** of the page"""
     html_code = requests.get(url)
-    # print("-------------------------------------------------------\n"
-    #       "Connection status : {}\n".format(html_code.status_code))
     return html_code
 
 
@@ -47,6 +45,5 @@ def get_infoDrom(url: str) -> list:
                 city = city.split(' ')[0]
             info.append([brand, model, year, price, city, motor, transmission, wd, km, href])
         except:
-            pass
-    # print(info)
+            print("Error: with connection")
     return info
