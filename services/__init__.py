@@ -6,6 +6,7 @@ from flask_apscheduler import APScheduler
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
 postgresql_password = os.getenv("POSTGRES_PASSWORD")
 host_name = os.getenv("host_name")
 secret_key = os.getenv("secret_key")

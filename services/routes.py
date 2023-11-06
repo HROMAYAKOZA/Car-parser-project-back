@@ -68,7 +68,6 @@ def registration() -> dict:
 def user_page(username) -> dict:
     """Returns a dictionary in which the **key is a parameter**,
     and the **value is a list** from which you can select a variant of this parameter"""
-    transmissions = ['Auto', 'Mechanics']
     cities = []
     brands = []
     models = []
