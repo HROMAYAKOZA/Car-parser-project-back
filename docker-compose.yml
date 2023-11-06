@@ -3,23 +3,60 @@ services:
   database:
     image: postgres:latest
     #network_mode: "host"
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: "carParser"
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "1234"
-      #PGDATA: "/var/lib/postgresql/data"
+      # PGDATA: "/var/lib/postgresql/data"
     ports:
       - "5432:5432"
-    #volumes:
+    volumes:
       #- ./postgresql.conf:/etc/postgresql/postgresql.conf
-      #- postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - carParserNetwork
 
   backend:
     build: .
     depends_on:
       - database
     ports:
-      - "8000:8000"
+      - "5000:5000"
+    networks:
+      - carParserNetwork
 
 volumes:
   postgres_data:
+
+networks:
+  carParserNetwork:
+    external: true
+
+# version: "3.9"
+# services:
+#   postgres:
+#     image: postgres:13.3
+#     environment:
+#       POSTGRES_DB: "dev_db"
+#       POSTGRES_USER: "root"
+#       POSTGRES_PASSWORD: "root"
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - db_data:/var/lib/postgresql/data
+
+#   pgadmin:
+#     container_name: pgadmin4
+#     image: dpage/pgadmin4
+#     restart: always
+#     environment:
+#       PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#       PGADMIN_DEFAULT_PASSWORD: root
+#     ports:
+#       - "5050:80"
+#     volumes:
+#       - pgadmin-data:/var/lib/pgadmin
+# volumes:
+#   db_data:
+#   pgadmin-data:

@@ -3,12 +3,12 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_apscheduler import APScheduler
-from services.settings import postgresql_password, secret_key, host_name
-import time
+import os
+from dotenv import load_dotenv
 
-# Sleep for 30 seconds
-time.sleep(30)
-
+postgresql_password = os.getenv("POSTGRES_PASSWORD")
+host_name = os.getenv("host_name")
+secret_key = os.getenv("secret_key")
 app = Flask(__name__)
 CORS(app)
 app.secret_key = secret_key
