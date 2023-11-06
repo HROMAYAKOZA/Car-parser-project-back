@@ -12,8 +12,4 @@ COPY .env /app
 
 EXPOSE 5000 5000
 
-#RUN echo "postgresql_password = 1234" > services/settings.py
-#RUN echo "secret_key='lmvsdlavlge'" >> services/settings.py
-#RUN echo "host_name='host.docker.internal'" >> services/settings.py
-
 CMD [ "flask", "--app", "flask_app", "run", "--host=0.0.0.0", "--port", "5000" ]
