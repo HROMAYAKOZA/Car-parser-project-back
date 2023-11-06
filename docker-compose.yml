@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: "carParser"
+      POSTGRES_USER: "postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - carParserNetwork
+
+  backend:
+    build: .
+    depends_on:
+      - database
+    ports:
+      - "5000:5000"
+    networks:
+      - carParserNetwork
+
+volumes:
+  postgres_data:
+
+networks:
+  carParserNetwork:
+    external: true
