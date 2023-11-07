@@ -1,56 +1,53 @@
 # Car-parser-project
+Парсер сайтов с объявлениями о продажах машин.
 
-## Routes
-#### Главная страница.
-```python
-@app.route('/', methods=['GET', 'POST'])
-def main() -> str:
-    return ""
+![ScreenShot](screenshot.jpg)
+## Репозиторий
+В данном репозитории находится бэкенд-состовляющая проекта.
+> Фронтенд часть находиться в [этом](https://github.com/karinaKarinakarinaKarina/buycarsite_front) репозитории.
+## Особенности
+- Поиск объявлений с нескольких сайтов
+- Актуализация объявлений раз в час
+- Фильтрация по параметрам
+- ~~Добавление понравившегося в избранное~~
+## Установка и запуск
+Допускается два способа запуска программы
+### Нативный запуск
+Для запуска необходим python(3.11) и PostgreSQL.
+1. Скачать проект в формате .zip и распаковать или с помощью git clone.
+2. Установить дополнительные библиотеки с помощью команды
+```bash
+pip install -r requirements.txt
 ```
-
-#### Страница входа.
-```python
-@app.route('/login', methods=['POST', 'GET'])
-def login_page():
-    result = {'message': '', 'username': ''}
-    return result
+3. Создать базу данных carParser в PostgreSQL
+4. Создать файл ".env" в корневой папке проекта с содержанием:
 ```
-*Возвращает сообщение об ошибке и имя пользователя*
-
-#### Страница регистрации.
-```python
-@app.route('/registration', methods=['POST', 'GET'])
-def registration():
-    result = {'message': '', 'username': ''}
-    return result
+POSTGRES_PASSWORD="{пароль от базы данных}"
+secret_key="{ключ для хеш-функции паролей}"
+host_name="local_host"
 ```
-*Возвращает сообщение об ошибке и имя пользователя*
-
-#### Страница ввода данных для парсера.
-```python
-@app.route('/account', methods=['GET'])
-@login_required
-def user_page(username):
-    transmissions = ['Auto', 'Mechanics']
-    cities = []
-    brands = []
-    models = []
-    info = {"brands": brands, "models": models, "cities": cities}
-    return info
+5. Запустить проект с помощью команды
+```bash
+flask --app flask_app.py run --port 5000
 ```
-*Возвращает **Map** где по ключам хранятся списки*
-
-#### Страница результата парсера.
-```python
-@app.route('/search_car', methods=['POST'])
-@login_required
-def search_car():
-    brand = request.form.get('brand')
-    model = request.form.get('model')
-    city = request.form.get('city')
-    price_from = request.form.get('price_from')
-    price_to = request.form.get('price_to')
-    ads = sorted_selectFromADS(brand, model, city, price_from, price_to)
-    return ads
+### Запуск через Docker
+Для запуска нужен Docker и Docker Compose(либо Docker Desktop)
+1. Скачать проект в формате .zip и распаковать или с помощью git clone скачать репозиторий.
+2. Создать файл ".env" в корневой папке проекта с содержанием:
 ```
-*Возвращает результат парсера в виде двухмерного массива где один массив это одно объявление*
+POSTGRES_PASSWORD="{пароль от базы данных}"
+secret_key="{ключ для хеш-функции паролей}"
+host_name="database"
+```
+3. Запустить проект с помощью команды:
+```bash
+docker-compose up --build
+```
+## Документация
+Документация находится в разделе [wiki](https://github.com/HROMAYAKOZA/Car-parser-project-back/wiki) репозитория.
+## Участники
+- [Бэкенд-разработчик](https://github.com/haribo0372) сервера и базы данных
+- [Бэкенд-разработчик](https://github.com/deBath) парсеров
+- [Фронтенд-разработчик](https://github.com/Sn0wEagle1)
+- [UI/UX-дизайнер](https://github.com/karinaKarinakarinaKarina)
+- [DevOps-инженер](https://github.com/HROMAYAKOZA)
