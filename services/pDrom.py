@@ -45,5 +45,6 @@ def get_infoDrom(url: str) -> list:
                 city = city.split(' ')[0]
             info.append([brand, model, year, price, city, motor, transmission, wd, km, href])
         except:
-            print("Error: with connection")
+            print("Error with connection \"{}\"".format(url))
+    # print(info)
     return info

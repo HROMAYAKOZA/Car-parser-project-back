@@ -4,7 +4,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-services/settings.py
 # C extensions
 *.so
 
@@ -162,4 +161,4 @@ cython_debug/
 #.idea/
 /bd/
 /services/garbage.py
-/services/settings.py
+/services/href.py
