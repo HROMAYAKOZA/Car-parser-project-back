@@ -63,11 +63,12 @@ def registration() -> dict:
     return result
 
 
-@app.route('/account', methods=['GET'])
-@login_required
-def user_page(username) -> dict:
+
+@app.route('/account', methods=['GET', 'POST'])
+def user_page() -> dict:
     """Returns a dictionary in which the **key is a parameter**,
     and the **value is a list** from which you can select a variant of this parameter"""
+    name = current_user.nickname
     cities = []
     brands = []
     models = []
@@ -78,12 +79,11 @@ def user_page(username) -> dict:
             brands.append(ad.brand)
         if not (ad.model in models):
             models.append(ad.model)
-    info = {"brands": brands, "models": models, "cities": cities}
+    info = {"name": name, "brands": brands, "models": models, "cities": cities}
     return info
 
 
 @app.route('/search_car', methods=['POST'])
-@login_required
 def search_car() -> list:
     """This function processes **all parameters** entered by the user
      and **outputs information corresponding to these parameters**"""

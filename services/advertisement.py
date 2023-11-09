@@ -81,14 +81,16 @@ def insert_ad_to_Advertisement(city_list, hmta) -> None:
 
 def get_statusAD(html: Response, url: str) -> BeautifulSoup:
     """This is the function of **checking the ad for relevance**"""
+    soup = BeautifulSoup(html.text, "html.parser")
     if re.findall(r".drom.ru/", url):
-        soup = BeautifulSoup(html.text, "html.parser")
         status = soup.find("div", class_="e1jb3i2p0 css-14asbju e1u9wqx22")
         return status
     elif re.findall(r"https://autograd-m.ru", url):
-        pass
+        status = soup.find("div", class_="not-found__block")
+        return status
     elif re.findall(r"https://cars.avtocod.ru", url):
-        pass
+        status = soup.find("div", class_="wrap")
+        return status
 
 
 def updatingADS() -> None:
@@ -100,7 +102,7 @@ def updatingADS() -> None:
         html = create_html(url)
         try:
             status = get_statusAD(html, url)
-            if status:
+            if status is not None:
                 deleteAD = Advertisement.query.filter_by(href=url).first()
                 print(deleteAD.href)
                 href = str(deleteAD.href)[:-13]
