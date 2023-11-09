@@ -9,7 +9,22 @@ from services.advertisement import sorted_selectFromADS
 
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    return render_template('index.html')
+    ads1 = []
+    ads2 = []
+    count = 0
+    for ad in Advertisement.query.all():
+        if count <= 8 and count % 2 == 0:
+            ads2.append({"brand": ad.brand, "model": ad.model,
+                         "year": ad.year, "price": ad.price,
+                         "picture": ad.img_url})
+            count += 1
+        elif count <= 8 and count % 2 != 0:
+            ads1.append({"brand": ad.brand, "model": ad.model,
+                         "year": ad.year, "price": ad.price,
+                         "picture": ad.img_url})
+            count += 1
+        else:
+            return render_template('index.html', ads1=ads1, ads2=ads2, len=4)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -81,16 +96,15 @@ def redirect_to_signin(response):
 @app.route('/<username>', methods=['GET'])
 @login_required
 def user_page(username):
-    transmissions = ['Auto', 'Mechanics']
     cities = []
     brands = []
     models = []
     for ad in Advertisement.query.all():
-        if not(ad.city in cities):
+        if not (ad.city in cities):
             cities.append(ad.city)
-        if not(ad.brand in brands):
+        if not (ad.brand in brands):
             brands.append(ad.brand)
-        if not(ad.model in models):
+        if not (ad.model in models):
             models.append(ad.model)
     return render_template('account.html',
                            brands=brands,

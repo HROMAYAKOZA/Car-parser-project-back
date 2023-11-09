@@ -6,13 +6,13 @@ from requests import Response
 
 
 def create_html(url: str) -> Response:
+    """This function creates the **html code** of the page"""
     html_code = requests.get(url)
-    # print("-------------------------------------------------------\n"
-    #       "Connection status : {}\n".format(html_code.status_code))
     return html_code
 
 
-def get_info(url: str) -> list:
+def get_infoDrom(url: str) -> list:
+    """This function returns a list of all the site's ads **drom.ru**"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
     allCars = soup.findAll('a', class_="css-xb5nz8 e1huvdhj1")
     info = []
@@ -43,22 +43,9 @@ def get_info(url: str) -> list:
             city = str(car.find('div', class_="css-1x4jcds eotelyr0").find('span').text)
             if ' ' in city:
                 city = city.split(' ')[0]
-            info.append([brand, model, year, price, city, motor, transmission, wd, km, href])
+
+            img_url = car.find("img").get("data-src")
+            info.append([brand, model, year, price, city, motor, transmission, wd, km, href, img_url])
         except:
-            pass
-    # print(info)
+            print("Error with connection \"{}\"".format(url))
     return info
-
-
-def get_full_info(url: str) -> list:
-    page = 0
-    full_info = []
-    while page <= 2:
-        url = url.replace(f"page{page}", f"page{page + 1}")
-        # print(url)
-        page += 1
-        for p in get_info(url):
-            # print(p)
-            full_info.append(p)
-    # print(full_info)
-    return full_info
