@@ -192,6 +192,13 @@ form {
     margin: -43px auto;
     transform: translateX(-30px);
 }
+.vertical-line22 {
+    background-color: #D9D9D9;
+    width: 20px;
+    height: 490px;
+    margin: -43px auto;
+    transform: translateX(-30px);
+}
 
 .cars1-imgs {
     margin-top: 65px;

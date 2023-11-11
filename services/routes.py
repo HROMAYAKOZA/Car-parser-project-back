@@ -6,46 +6,79 @@ from services import app, db
 from services.models import Users, Advertisement
 from services.advertisement import sorted_selectFromADS
 
+cities = []
+brands = []
+models = []
+years = []
+transmissions = []
+wds = []
+for ad in Advertisement.query.all():
+    if not (ad.city in cities):
+        cities.append(ad.city)
+    if not (ad.brand in brands):
+        brands.append(ad.brand)
+    if not (ad.model in models):
+        models.append(ad.model)
+    if not (ad.year in years):
+        years.append(ad.year)
+    if not (ad.transmission in transmissions) and ad.transmission != "Нет информации":
+        transmissions.append(ad.transmission)
+    if not (ad.wd in wds):
+        wds.append(ad.wd)
+
 
 @app.route('/', methods=['GET', 'POST'])
-def hello_world():
-    ads1 = []
-    ads2 = []
-    count = 0
-    for ad in Advertisement.query.all():
-        if count <= 8 and count % 2 == 0:
-            ads2.append({"brand": ad.brand, "model": ad.model,
-                         "year": ad.year, "price": ad.price,
-                         "picture": ad.img_url})
-            count += 1
-        elif count <= 8 and count % 2 != 0:
-            ads1.append({"brand": ad.brand, "model": ad.model,
-                         "year": ad.year, "price": ad.price,
-                         "picture": ad.img_url})
-            count += 1
-        else:
-            return render_template('index.html', ads1=ads1, ads2=ads2, len=4)
+def main():
+    if request.method == 'GET':
+        ads = Advertisement.query.all()
+        return render_template('index.html',
+                               ads=ads,
+                               len=8, brands=brands,
+                               models=models, cities=cities,
+                               wds=wds, trans=transmissions, years=years)
+    elif request.method == 'POST':
+        brand = request.form.get('brand')
+        model = request.form.get('model')
+        city = request.form.get('city')
+        year = request.form.get('year')
+        trans = request.form.get('transmission')
+        wd = request.form.get('wd')
+        ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
+                                         Advertisement.city == city, Advertisement.year == year,
+                                         Advertisement.transmission == trans, Advertisement.wd == wd).all()
+        return render_template('index.html',
+                               ads=ads,
+                               len=len(ads), brands=brands,
+                               models=models, cities=cities, wds=wds,
+                               trans=transmissions, years=years)
+
+
+@app.route('/advertisement/<ID>', methods=['GET', 'POST'])
+def car_page(ID):
+    advert = Advertisement.query.filter(Advertisement.id == ID).first()
+    return render_template("oneCarInfo.html", ad=advert)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_page():
     login = request.form.get('login')
     password = request.form.get('password')
-    if login and password:
-        user = Users.query.filter_by(login=login).first()
-        if user and check_password_hash(user.password, password):
-            login_user(user)
+    if request.method == 'POST':
+        if login and password:
+            user = Users.query.filter_by(login=login).first()
+            if user and check_password_hash(user.password, password):
+                login_user(user)
 
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
+                next_page = request.args.get('next')
+                if next_page:
+                    return redirect(next_page)
+                else:
+                    return redirect(url_for("user_page", username=current_user.nickname))
             else:
-                return redirect(url_for("user_page", username=current_user.nickname))
-        else:
-            flash("Неверный логин или пароль")
+                flash("Неверный логин или пароль")
 
-    else:
-        flash("Пожалуйста, введите логин и пароль")
+        else:
+            flash("Пожалуйста, введите логин и пароль")
 
     return render_template('login.html')
 
@@ -83,7 +116,7 @@ def registration():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('hello_world'))
+    return redirect(url_for('main'))
 
 
 @app.after_request
@@ -93,19 +126,9 @@ def redirect_to_signin(response):
     return response
 
 
-@app.route('/<username>', methods=['GET'])
+@app.route('/account/<username>', methods=['GET'])
 @login_required
 def user_page(username):
-    cities = []
-    brands = []
-    models = []
-    for ad in Advertisement.query.all():
-        if not (ad.city in cities):
-            cities.append(ad.city)
-        if not (ad.brand in brands):
-            brands.append(ad.brand)
-        if not (ad.model in models):
-            models.append(ad.model)
     return render_template('account.html',
                            brands=brands,
                            models=models,
@@ -120,5 +143,9 @@ def search_car():
     city = request.form.get('city')
     price_from = request.form.get('price_from')
     price_to = request.form.get('price_to')
-    ads = sorted_selectFromADS(brand, model, city, price_from, price_to)
-    return render_template('info.html', ads=ads)
+    ads = []
+    for advertisement in sorted_selectFromADS(brand, model, city, price_from, price_to):
+        ads.append({"id": advertisement.id, "brand": advertisement.brand, "model": advertisement.model,
+                    "year": advertisement.year, "price": advertisement.price,
+                    "picture": advertisement.img_url})
+    return render_template('info.html', ads=ads, len=len(ads))

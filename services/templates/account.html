@@ -8,47 +8,47 @@
   Здравствуйте, {{ current_user.nickname }}!
     {% endif %}</h1>
 <form action="/search_car" method='POST'>
-    <table>
-		<tr>
-			<td>
-                <select name="brand">
+    <div class="filters">
+            <span class="filt-choose">Выбрать:</span>
+            <a class="filt">Город:
+                <select name="city" class="filt">
+                    {% for city in cities %}
+                        <option value="{{city}}">
+                            {{city}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </a>
+            <a class="filt">Марка:
+                <select name="brand" class="filt">
                     {% for brand in brands %}
                         <option value="{{brand}}">
                             {{ brand }}
                         </option>
                     {% endfor %}
                 </select>
-                <select name="model">
-                    <option value="All">Все</option>
+            </a>
+            <a class="filt">Модель:
+                <select name="model" class="filt">
                     {% for model in models %}
-                        <option value="{{model}}">{{model}}</option>
+                        <option value="{{model}}">
+                            {{ model }}
+                        </option>
                     {% endfor %}
                 </select>
-            </td>
-		</tr>
-        <tr>
-			<td>
-                <select name="city">
-                    {% for city in cities %}
-                        <option value="{{city}}">{{city}}</option>
-                    {% endfor %}
-                </select>
-            </td>
-		</tr>
-        <tr>
-            <td>Цена:
+            </a>
+            <a class="filt">Цена:
                 <input type="number" placeholder="от" name="price_from">
                 <input type="number" placeholder="до" name="price_to">
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <button type="submit">Найти</button>
-            </td>
-        </tr>
-	</table>
+            </a>
+            <a class="filt">
+                <button type="submit" class="filt">Найти</button>
+            </a>
+    </div>
 </form>
+<a class="filt" href="{{ url_for('logout') }}">
+    <button class="filt">Выход</button>
+</a>
 
 </body>
 </html>

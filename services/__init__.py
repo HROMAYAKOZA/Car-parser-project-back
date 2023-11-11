@@ -20,7 +20,9 @@ db = SQLAlchemy(app)
 manager = LoginManager(app)
 scheduler = APScheduler()
 
-from services import models, routes
+from services import models
 
 with app.app_context():
     db.create_all()
+
+from services import routes

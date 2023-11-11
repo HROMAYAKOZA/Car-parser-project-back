@@ -25,7 +25,8 @@ def get_infoAutograd(url: str) -> list:
             for z in range(len(components)):
                 components[z] = components[z].replace('\n', '').replace('\xa0', '').replace('\t', '')
 
-            motor = "{} {} {} {}, {}".format(components[0], components[1], components[4], components[5], components[7])
+            motor = "{} {} {} {}, {}".format(components[0], components[1], components[4], components[5],
+                                             components[7].lower())
             transmission = components[6].strip()
             wd = components[10].strip()
             km = "{} {}".format(components[2], components[3])

@@ -30,7 +30,12 @@ def get_infoDrom(url: str) -> list:
                 components += parameter.text + " "
             components = components.split(',')
             motor = "{},{}".format(components[0], components[1])
-            transmission = components[2].strip()
+            trs = components[2].strip().split(" ")
+            transmission = ""
+            if len(trs) >= 2:
+                transmission += trs[1]
+            else:
+                transmission += trs[0]
             wd = components[3].strip()
             km = components[4].strip()
 

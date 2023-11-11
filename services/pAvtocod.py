@@ -37,7 +37,7 @@ def get_infoAvtocod(url: str) -> list:
             z[0].strip()
             z[1].strip()
             m = trans.copy()
-            motor = "{} {}, {}".format(z[0], z[1], m[0])
+            motor = ("{} {}, {}".format(z[0], z[1], m[0])).lower()
             if "привод" in trans:
                 wd = "{} {}".format(m[1], m[2])
                 if "дв." in z[3]:
@@ -58,7 +58,8 @@ def get_infoAvtocod(url: str) -> list:
                 city = city.split(' ')[0]
             img_url = car.find("a").find('img').get('src')
             if re.findall(r"https://adsboard-static.spectrumdata", img_url):
-                info.append([brand, model, year, price, city, motor, transmission, wd, km, href, img_url])
+                if transmission != "Нет информации" and wd != "Нет информации":
+                    info.append([brand, model, year, price, city, motor, transmission, wd, km, href, img_url])
         except:
             print("Error with connection \"{}\"".format(url))
     # print(info)

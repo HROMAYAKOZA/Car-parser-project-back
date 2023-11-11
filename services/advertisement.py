@@ -21,7 +21,7 @@ def sorted_selectFromADS(brand, model, city, price_from, price_to) -> list:
             ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
                                              Advertisement.city == city,
                                              Advertisement.price.cast(Integer) >= int(price_from),
-                                             Advertisement.price.cast(Integer) <= int(price_to))
+                                             Advertisement.price.cast(Integer) <= int(price_to)).all()
         elif price_to and not price_from:
             ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
                                              Advertisement.city == city,

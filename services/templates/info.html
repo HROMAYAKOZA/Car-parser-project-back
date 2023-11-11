@@ -7,16 +7,71 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body>
-{% for ad in ads %}
-    <h2><div>{{ "{0} {1} {2}".format(ad.brand, ad.model, ad.year) }}</div></h2>
-    <div>Цена : {{ ad.price }} ₽</div>
-    <div>Город : {{ ad.city }}</div>
-    <div>Пробег : {{ ad.km }}</div>
-    <div>Двигатель : {{ ad.motor }}</div>
-    <div>Коробка передач : {{ ad.transmission }}</div>
-    <div>Привод : {{ ad.wd }}</div>
-    <div>Ссылка на объявление : <a href="{{ad.href}}">{{ ad.href }}</a></div>
-    <div> --------------------------------------------------- </div>
-{% endfor %}
+<div class="cars">
+        {% if len == 1 %}
+            <div class="vertical-line22">
+                <div class="cars1-imgs">
+                    <a href="{{url_for('car_page', url = ads[0].href)}}" class="cars1-img1">
+                        <img src="{{ ads[0].picture }}" alt="Image" width="500" height="400">
+                    </a>
+                </div>
+                <div class="cars1-texts">
+                    <div class="cars1-text1">
+                        <div class="text1" >
+                            <a href="{{url_for('car_page', url = ads[0].href)}}">
+                            {{ "{0} {1} {2}".format(ads[0].brand, ads[0].model, ads[0].year) }}
+                            </a>
+                        </div>
+                        <div class="text2">{{ "Цена: {1} ₽".format(ads[0].price) }}</div>
+                    </div>
+                </div>
+                <div class="horisontal-line"></div>
+            </div>
+        {% else %}
+            <div class="vertical-line">
+                {% for i in range(0, len, 2) %}
+                    <div class="cars1-imgs">
+                        <a href="#" class="cars1-img1">
+                            <img src="{{ ads[i].picture }}" alt="Image" width="500" height="400">
+                        </a>
+                        <a href="#" class="cars1-img2">
+                            <img src="{{ ads[i+1].picture }}" alt="Image" width="500" height="400">
+                        </a>
+                    </div>
+                    <div class="cars1-texts">
+                        <div class="cars1-text1">
+                            <div class="text1" >{{ "{0} {1} {2}".format(ads[i].brand, ads[i].model, ads[i].year) }}</div>
+                            <div class="text2">{{ "{0} {1} ₽".format("Цена:", ads[i].price) }}</div>
+                        </div>
+                        <div class="cars1-text2">
+                            <div class="text1" >{{ "{0} {1} {2}".format(ads[i+1].brand, ads[i+1].model, ads[i+1].year) }}</div>
+                            <div class="text2">{{ "{0} {1} ₽".format("Цена:", ads[i+1].price) }}</div>
+                        </div>
+                    </div>
+                    <div class="horisontal-line"></div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <a href="#" class="custom-button">Посмотреть другие предложения</a>
+        <div class="care">
+            <img src="{{url_for('static', filename='images/image13.png')}}" class="img13">
+            <div class="image__texts">
+                <div class="image__text1">С заботой о покупателях</div>
+                <div class="underline"></div>
+                <div class="image__text2">У каждой машины проверяются документы, наличие<br> учета в ГИБДД и подлинность этих данных. С нами вы<br> можете гарантированно оформить безопасную сделку.</div>
+            </div>
+        </div>
+        <div class="back">
+            <div class="back__text1">Будь в курсе новых<br> предложений</div>
+            <div class="back__text2">Узнавайте первыми о поступлении новых<br> товаров, скидках и новостях.</div>
+            <div class="back__text3">Для этого укажите свой email:</div>
+            <div class="email">
+                <input type="text" class="email1">
+                <a href="#" class="send__button">
+                    <img src="{{url_for('static', filename='images/Arrow1.svg')}}" class="arrow">
+                </a>
+            </div>
+        </div>
+        </div>
 </body>
 </html>
