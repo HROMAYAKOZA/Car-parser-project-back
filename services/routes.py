@@ -33,7 +33,7 @@ def main():
         ads = Advertisement.query.all()
         return render_template('index.html',
                                ads=ads,
-                               len=8, brands=brands,
+                               len=5, brands=brands,
                                models=models, cities=cities,
                                wds=wds, trans=transmissions, years=years)
     elif request.method == 'POST':
@@ -129,23 +129,4 @@ def redirect_to_signin(response):
 @app.route('/account/<username>', methods=['GET'])
 @login_required
 def user_page(username):
-    return render_template('account.html',
-                           brands=brands,
-                           models=models,
-                           cities=cities)
-
-
-@app.route('/search_car', methods=['POST'])
-@login_required
-def search_car():
-    brand = request.form.get('brand')
-    model = request.form.get('model')
-    city = request.form.get('city')
-    price_from = request.form.get('price_from')
-    price_to = request.form.get('price_to')
-    ads = []
-    for advertisement in sorted_selectFromADS(brand, model, city, price_from, price_to):
-        ads.append({"id": advertisement.id, "brand": advertisement.brand, "model": advertisement.model,
-                    "year": advertisement.year, "price": advertisement.price,
-                    "picture": advertisement.img_url})
-    return render_template('info.html', ads=ads, len=len(ads))
+    return render_template('account.html')

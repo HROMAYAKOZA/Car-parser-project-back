@@ -2,53 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-<h1>{% if current_user.is_authenticated %}
+<a>{% if current_user.is_authenticated %}
   Здравствуйте, {{ current_user.nickname }}!
-    {% endif %}</h1>
-<form action="/search_car" method='POST'>
-    <div class="filters">
-            <span class="filt-choose">Выбрать:</span>
-            <a class="filt">Город:
-                <select name="city" class="filt">
-                    {% for city in cities %}
-                        <option value="{{city}}">
-                            {{city}}
-                        </option>
-                    {% endfor %}
-                </select>
-            </a>
-            <a class="filt">Марка:
-                <select name="brand" class="filt">
-                    {% for brand in brands %}
-                        <option value="{{brand}}">
-                            {{ brand }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </a>
-            <a class="filt">Модель:
-                <select name="model" class="filt">
-                    {% for model in models %}
-                        <option value="{{model}}">
-                            {{ model }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </a>
-            <a class="filt">Цена:
-                <input type="number" placeholder="от" name="price_from">
-                <input type="number" placeholder="до" name="price_to">
-            </a>
-            <a class="filt">
-                <button type="submit" class="filt">Найти</button>
-            </a>
-    </div>
-</form>
+    {% endif %}</a>
+
 <a class="filt" href="{{ url_for('logout') }}">
     <button class="filt">Выход</button>
 </a>
-
 </body>
 </html>
