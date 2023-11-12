@@ -1,7 +1,7 @@
 import unicodedata
 from bs4 import BeautifulSoup
 import re
-from services.pDrom import create_html
+from services.pDrom import create_html, real_trans
 
 
 def get_infoAvtocod(url: str) -> list:
@@ -47,6 +47,7 @@ def get_infoAvtocod(url: str) -> list:
             else:
                 wd = "Нет информации"
                 transmission = m[1].strip()
+            transmission = real_trans(transmission)
 
             href = car.find("div", class_="card-car-long").find("a").get("href").strip()
             price = unicodedata.normalize("NFKD", "{}₽".format(car
@@ -64,3 +65,4 @@ def get_infoAvtocod(url: str) -> list:
             print("Error with connection \"{}\"".format(url))
     # print(info)
     return info
+

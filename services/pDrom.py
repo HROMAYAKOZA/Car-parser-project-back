@@ -11,6 +11,28 @@ def create_html(url: str) -> Response:
     return html_code
 
 
+def real_trans(tr: str) -> str:
+    tr = tr.lower()
+    if tr == "вариатор":
+        tr = "Вариатор"
+    elif tr == "механика" or tr == "механическая" or tr == "мкпп":
+        tr = "МКПП"
+    elif tr == "автомат" or tr == "автоматическая" or tr == "акпп":
+        tr = "АКПП"
+    elif tr == "робот":
+        tr = "РКП"
+    return tr
+
+def privod(priv: str) -> str:
+    priv = priv.lower()
+    if "передний" in priv:
+        priv = "Передний привод"
+    elif "задний" in priv:
+        priv = "Задний привод"
+    elif "полный" or "4wd" in priv:
+        priv = "Полный привод"
+    return priv
+
 def get_infoDrom(url: str) -> list:
     """This function returns a list of all the site's ads **drom.ru**"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
@@ -36,7 +58,9 @@ def get_infoDrom(url: str) -> list:
                 transmission += trs[1]
             else:
                 transmission += trs[0]
+            transmission = real_trans(transmission)
             wd = components[3].strip()
+            wd = privod(wd)
             km = components[4].strip()
 
             href = car.get("href").strip()
@@ -54,3 +78,5 @@ def get_infoDrom(url: str) -> list:
         except:
             print("Error with connection \"{}\"".format(url))
     return info
+
+

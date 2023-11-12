@@ -1,7 +1,7 @@
 import unicodedata
 
 from bs4 import BeautifulSoup
-from services.pDrom import create_html
+from services.pDrom import create_html, real_trans, privod
 
 
 def get_infoAutograd(url: str) -> list:
@@ -28,7 +28,9 @@ def get_infoAutograd(url: str) -> list:
             motor = "{} {} {} {}, {}".format(components[0], components[1], components[4], components[5],
                                              components[7].lower())
             transmission = components[6].strip()
+            transmission = real_trans(transmission)
             wd = components[10].strip()
+            wd = privod(wd)
             km = "{} {}".format(components[2], components[3])
 
             href = car.find("a").get("href")
