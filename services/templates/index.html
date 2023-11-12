@@ -125,7 +125,7 @@
             </div>
         {% else %}
             <div class="vertical-line">
-                {% for i in range(0, 2) %}
+                {% for i in range(0, 2, 2) %}
                     <div class="cars1-imgs">
                         <a class="cars1-img1" href="{{url_for('car_page', ID = ads[i].id)}}">
                             <img src="{{ ads[i].img_url }}" alt="Image" width="500" height="400">

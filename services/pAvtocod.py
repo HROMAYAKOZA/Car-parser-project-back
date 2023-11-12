@@ -59,7 +59,7 @@ def get_infoAvtocod(url: str) -> list:
                 city = city.split(' ')[0]
             img_url = car.find("a").find('img').get('src')
             if re.findall(r"https://adsboard-static.spectrumdata", img_url):
-                if transmission != "Нет информации" and wd != "Нет информации":
+                if transmission != "нет информации" and wd != "нет информации":
                     info.append([brand, model, year, price, city, motor, transmission, wd, km, href, img_url])
         except:
             print("Error with connection \"{}\"".format(url))

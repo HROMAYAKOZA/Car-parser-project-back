@@ -4,27 +4,26 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from services import app, db
 from services.models import Users, Advertisement
-from services.advertisement import sorted_selectFromADS
+from services.advertisement import sorted_selectFromADS, insert_ad_to_Advertisement
+from services.href import cities
 
-cities = []
+# insert_ad_to_Advertisement(cities, 10)
+cities_db = []
 brands = []
 models = []
 years = []
 transmissions = []
-wds = []
 for ad in Advertisement.query.all():
-    if not (ad.city in cities):
-        cities.append(ad.city)
+    if not (ad.city in cities_db):
+        cities_db.append(ad.city)
     if not (ad.brand in brands):
         brands.append(ad.brand)
     if not (ad.model in models):
         models.append(ad.model)
     if not (ad.year in years):
         years.append(ad.year)
-    if not (ad.transmission in transmissions) and ad.transmission != "Нет информации":
+    if not (ad.transmission in transmissions):
         transmissions.append(ad.transmission)
-    if not (ad.wd in wds):
-        wds.append(ad.wd)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -34,22 +33,21 @@ def main():
         return render_template('index.html',
                                ads=ads,
                                len=5, brands=brands,
-                               models=models, cities=cities,
-                               wds=wds, trans=transmissions, years=years)
+                               models=models, cities=cities_db,
+                               trans=transmissions, years=years)
     elif request.method == 'POST':
         brand = request.form.get('brand')
         model = request.form.get('model')
         city = request.form.get('city')
         year = request.form.get('year')
         trans = request.form.get('transmission')
-        wd = request.form.get('wd')
-        ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
-                                         Advertisement.city == city, Advertisement.year == year,
-                                         Advertisement.transmission == trans, Advertisement.wd == wd).all()
+        price_from = request.form.get('price_from')
+        price_to = request.form.get('price_to')
+        ads = sorted_selectFromADS(brand, model, city, price_from, price_to)
         return render_template('index.html',
                                ads=ads,
                                len=len(ads), brands=brands,
-                               models=models, cities=cities, wds=wds,
+                               models=models, cities=cities_db,
                                trans=transmissions, years=years)
 
 
