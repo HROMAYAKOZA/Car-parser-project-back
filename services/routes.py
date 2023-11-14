@@ -4,10 +4,11 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from services import app, db
 from services.models import Users, Advertisement
-from services.advertisement import sorted_selectFromADS, insert_ad_to_Advertisement
 from services.href import cities
+from services.advertisement import sorted_selectFromADS, \
+    insert_ad_to_Advertisement
 
-# insert_ad_to_Advertisement(cities, 10)
+insert_ad_to_Advertisement(cities, 10)
 cities_db = []
 brands = []
 models = []
@@ -71,7 +72,8 @@ def login_page():
                 if next_page:
                     return redirect(next_page)
                 else:
-                    return redirect(url_for("user_page", username=current_user.nickname))
+                    return redirect(
+                        url_for("user_page", username=current_user.nickname))
             else:
                 flash("Неверный логин или пароль")
 
@@ -101,7 +103,8 @@ def registration():
                     flash("Этот логин уже занят")
                 else:
                     hash_password = generate_password_hash(password)
-                    newUser = Users(nickname=nickname, login=login, password=hash_password)
+                    newUser = Users(nickname=nickname, login=login,
+                                    password=hash_password)
                     db.session.add(newUser)
                     db.session.commit()
 

@@ -14,8 +14,9 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = secret_key
 app.app_context().push()
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:{}@{}:5432/carParser'.format(postgresql_password,
-                                                                                            host_name)
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:{}@{}:5432/carParser' \
+    .format(postgresql_password, host_name)
 db = SQLAlchemy(app)
 manager = LoginManager(app)
 scheduler = APScheduler()
