@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 POSTGRES_PASSWORD="{пароль от базы данных}"
 secret_key="{ключ для хеш-функции паролей}"
-host_name="local_host"
+host_name="localhost"
 ```
 5. Запустить проект с помощью команды
 ```bash
