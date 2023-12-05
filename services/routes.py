@@ -27,19 +27,20 @@ for ad in Advertisement.query.all():
         transmissions.append(ad.transmission)
 
 InfoLists = {"cities": cities_db, "brands": brands, "models": models,
-             "years" : years, "transmissions": transmissions, "lens" : 5}
+             "years": years, "transmissions": transmissions}
 
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
     if request.method == 'GET':
-        ads = Advertisement.query.limit(10).all()
+        ads = Advertisement.query.limit(11).all()
         InfoLists["ads"] = [{'id': item.id,
                              'brand': item.brand,
-                             'model' : item.model,
-                             'year' : item.year,
-                             'price' : item.price,
-                             'image' : item.img_url} for item in ads]
+                             'model': item.model,
+                             'year': item.year,
+                             'price': item.price,
+                             'href': item.href,
+                             'image': item.img_url} for item in ads]
         return jsonify(InfoLists)
     elif request.method == 'POST':
         brand = request.form.get('brand')
@@ -51,9 +52,14 @@ def main():
         price_to = request.form.get('price_to')
         ads = sorted_selectFromADS(brand, model, city,
                                    price_from, price_to)
-        InfoLists["ads"] = ads
-        InfoLists["lens"] = len(ads)
-        return InfoLists
+        InfoLists["ads"] = [{'id': item.id,
+                             'brand': item.brand,
+                             'model': item.model,
+                             'year': item.year,
+                             'price': item.price,
+                             'href': item.href,
+                             'image': item.img_url} for item in ads]
+        return jsonify(InfoLists)
 
 
 @app.route('/advertisement/<ID>', methods=['GET', 'POST'])
