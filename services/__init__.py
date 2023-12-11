@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 postgresql_password = os.getenv("POSTGRES_PASSWORD")
-host_name = os.getenv("host_name")
+host_name = os.getenv("HOST_NAME")
 secret_key = os.getenv("SECRET_KEY")
 app = Flask(__name__)
 CORS(app)
