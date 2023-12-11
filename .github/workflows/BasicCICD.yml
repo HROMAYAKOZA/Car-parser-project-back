@@ -10,7 +10,7 @@ env:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  HOSTNAME: ${{ vars.HOSTNAME }}
+  HOST_NAME: ${{ vars.HOST_NAME }}
 
 jobs:
   build:
