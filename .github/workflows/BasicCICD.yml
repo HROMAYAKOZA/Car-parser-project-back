@@ -6,8 +6,6 @@ on:
       - readme_and_docks
 
 env:
-  POSTGRES_DB: carParser
-  POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   HOST_NAME: ${{ vars.HOST_NAME }}
@@ -20,6 +18,10 @@ jobs:
     services:
         postgres:
           image: postgres:latest
+          env:
+            POSTGRES_DB: carParser
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           ports:
             - 5432:5432
 
