@@ -16,6 +16,7 @@ class Advertisement(db.Model):
     wd = db.Column(db.String(128), nullable=False)
     km = db.Column(db.String(128), nullable=False)
     href = db.Column(db.String(256), nullable=False)
+    img_url = db.Column(db.String(256), nullable=False)
 
 
 class Users(db.Model, UserMixin):

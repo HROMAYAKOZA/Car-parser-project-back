@@ -1,3 +1,6 @@
+import base64
+
+import requests
 from bs4 import BeautifulSoup
 from requests import Response
 from sqlalchemy import Integer
@@ -10,45 +13,59 @@ from services.pDrom import create_html, get_infoDrom
 from services import app, db
 
 
-def sorted_selectFromADS(brand, model, city, price_from, price_to) -> list:
+def sorted_selectFromADS(brand, model, city, price_from, price_to):
     """This function **selects the database fields** that match the input data"""
-    ads = []
     if model != "All":
         if price_from and price_to:
-            ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
+            return Advertisement.query.filter(Advertisement.brand == brand,
+                                             Advertisement.model == model,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) >= int(price_from),
-                                             Advertisement.price.cast(Integer) <= int(price_to))
+                                             Advertisement.price.cast(
+                                                 Integer) >= int(price_from),
+                                             Advertisement.price.cast(
+                                                 Integer) <= int(
+                                                 price_to)).all()
         elif price_to and not price_from:
-            ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
+            return Advertisement.query.filter(Advertisement.brand == brand,
+                                             Advertisement.model == model,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) <= int(price_to)).all()
+                                             Advertisement.price.cast(
+                                                 Integer) <= int(
+                                                 price_to)).all()
         elif price_from and not price_to:
-            ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
+            return Advertisement.query.filter(Advertisement.brand == brand,
+                                             Advertisement.model == model,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) >= int(price_from)).all()
+                                             Advertisement.price.cast(
+                                                 Integer) >= int(
+                                                 price_from)).all()
         else:
-            ads = Advertisement.query.filter(Advertisement.brand == brand, Advertisement.model == model,
+            return Advertisement.query.filter(Advertisement.brand == brand,
+                                             Advertisement.model == model,
                                              Advertisement.city == city).all()
     else:
         if price_from and price_to:
-            ads = Advertisement.query.filter(Advertisement.brand == brand,
+            return Advertisement.query.filter(Advertisement.brand == brand,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) >= int(price_from),
-                                             Advertisement.price.cast(Integer) <= int(price_to))
+                                             Advertisement.price.cast(
+                                                 Integer) >= int(price_from),
+                                             Advertisement.price.cast(
+                                                 Integer) <= int(price_to))
         elif price_to and not price_from:
-            ads = Advertisement.query.filter(Advertisement.brand == brand,
+            return Advertisement.query.filter(Advertisement.brand == brand,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) <= int(price_to)).all()
+                                             Advertisement.price.cast(
+                                                 Integer) <= int(
+                                                 price_to)).all()
         elif price_from and not price_to:
-            ads = Advertisement.query.filter(Advertisement.brand == brand,
+            return Advertisement.query.filter(Advertisement.brand == brand,
                                              Advertisement.city == city,
-                                             Advertisement.price.cast(Integer) >= int(price_from)).all()
+                                             Advertisement.price.cast(
+                                                 Integer) >= int(
+                                                 price_from)).all()
         else:
-            ads = Advertisement.query.filter(Advertisement.brand == brand,
+            return Advertisement.query.filter(Advertisement.brand == brand,
                                              Advertisement.city == city).all()
-
-    return ads
 
 
 def insert_ad_to_Advertisement(city_list, hmta) -> None:
@@ -68,8 +85,10 @@ def insert_ad_to_Advertisement(city_list, hmta) -> None:
             for ad in ads:
                 advert = Advertisement.query.filter_by(href=ad[9]).first()
                 if not advert and count < hmta:
-                    newAd = Advertisement(brand=ad[0], model=ad[1], year=ad[2], price=ad[3], city=ad[4], motor=ad[5],
-                                          transmission=ad[6], wd=ad[7], km=ad[8], href=ad[9])
+                    newAd = Advertisement(brand=ad[0], model=ad[1], year=ad[2],
+                                          price=ad[3], city=ad[4], motor=ad[5],
+                                          transmission=ad[6], wd=ad[7],
+                                          km=ad[8], href=ad[9], img_url=ad[10])
                     db.session.add(newAd)
                     db.session.commit()
                     count += 1
