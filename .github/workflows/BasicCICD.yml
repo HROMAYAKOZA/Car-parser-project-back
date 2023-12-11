@@ -1,0 +1,51 @@
+name: Python CI/CD
+
+on:
+  push:
+    branches:
+      - readme_and_docks
+
+env:
+  POSTGRES_DB: carParser
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  HOSTNAME: ${{ vars.HOSTNAME }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+        postgres:
+          image: postgres:latest
+          ports:
+            - 5432:5432
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run tests
+      run: |
+        pytest .
+
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Deploy to production
+#       # Add your deployment steps here
+#       run: echo "Deployment step"
