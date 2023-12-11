@@ -7,7 +7,7 @@ from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
 
-# insert_ad_to_Advertisement(cities, 10)
+insert_ad_to_Advertisement(cities, 10)
 cities_db = []
 brands = []
 models = []
