@@ -3,7 +3,7 @@ name: Python CI/CD
 on:
   push:
     branches:
-      - readme_and_docks
+      - main
 
 env:
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -42,7 +42,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest .
+        pytest app_test.py
 
 #   deploy:
 #     needs: build

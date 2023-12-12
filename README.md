@@ -23,8 +23,8 @@ pip install -r requirements.txt
 4. Создать файл ".env" в корневой папке проекта с содержанием:
 ```
 POSTGRES_PASSWORD="{пароль от базы данных}"
-secret_key="{ключ для хеш-функции паролей}"
-host_name="localhost"
+SECRET_KEY="{ключ для хеш-функции паролей}"
+HOST_NAME="localhost"
 ```
 5. Запустить проект с помощью команды
 ```bash
@@ -36,8 +36,8 @@ flask --app flask_app.py run --port 5000
 2. Создать файл ".env" в корневой папке проекта с содержанием:
 ```
 POSTGRES_PASSWORD="{пароль от базы данных}"
-secret_key="{ключ для хеш-функции паролей}"
-host_name="database"
+SECRET_KEY="{ключ для хеш-функции паролей}"
+HOST_NAME="database"
 ```
 3. Запустить проект с помощью команды:
 ```bash
