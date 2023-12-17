@@ -1,13 +1,20 @@
-from flask import render_template, request, redirect, url_for, jsonify
+from __future__ import annotations
+
+from typing import Any
+
+from flask import render_template, request, jsonify, \
+    session, Response
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import login_user, login_required, current_user
+from flask_login import current_user
+
 from services import app, db
 from services.models import Users, Advertisement
 from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
 
-insert_ad_to_Advertisement(cities, 10)
+# Remove the comment if you want to fill in the database
+# insert_ad_to_Advertisement(cities, 10)
 cities_db = []
 brands = []
 models = []
@@ -31,6 +38,11 @@ InfoLists = {"cities": cities_db, "brands": brands, "models": models,
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    print(session.get('logged_in'))
+    if session.get('logged_in'):
+        InfoLists["auth"] = "TRUE"
+    else:
+        InfoLists["auth"] = "FALSE"
     if request.method == 'GET':
         ads = Advertisement.query.limit(11).all()
         InfoLists["ads"] = [{'id': item.id,
@@ -61,25 +73,39 @@ def main():
         return jsonify(InfoLists)
 
 
-@app.route('/advertisement/<ID>', methods=['GET', 'POST'])
+@app.route('/advertisement/<ID>', methods=['GET'])
 def car_page(ID):
     advert = Advertisement.query.filter(Advertisement.id == ID).first()
-    return render_template("oneCarInfo.html", ad=advert)
+    result = {'id': advert.id,
+              'price': advert.price,
+              'brand': advert.brand,
+              'model': advert.model,
+              'year': advert.year,
+              'km': advert.km,
+              'motor': advert.motor,
+              'transmission': advert.transmission,
+              'wd': advert.wd,
+              'href': advert.href,
+              'image': advert.img_url}
+    return jsonify(result)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_page() -> dict:
-    """Returns a dictionary with an error message and the username of the user.\n
-     If the error message is empty in the dictionary,then the user is transferred to his account"""
+    """Returns a dictionary with an error message and the username of the
+    user.\n If the error message is empty in the dictionary,then the user is
+    transferred to his account"""
     result = {'message': '', 'username': ''}
     login = request.form.get('login')
     password = request.form.get('password')
     if login and password:
         user = Users.query.filter_by(login=login).first()
         if user and check_password_hash(user.password, password):
-            login_user(user)
-            print("login")
-            result['username'] = current_user.nickname
+            session['logged_in'] = True
+            session['username'] = login
+            session.permanent = True
+
+            result['username'] = login
             return result
         else:
             result['message'] = "Неверный логин или пароль"
@@ -89,10 +115,19 @@ def login_page() -> dict:
     return result
 
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+
+    return jsonify({'message': 'Logout successful'}), 200
+
+
 @app.route('/registration', methods=['POST', 'GET'])
 def registration() -> dict:
-    """Returns a **dictionary** with an **error message** and the **username** of the user.\n
-    If the error message **is empty** in the dictionary, then the user is **successfully registered**"""
+    """Returns a **dictionary** with an **error message** and the
+    **username** of the user.\n If the error message **is empty** in the
+    dictionary, then the user is **successfully registered**"""
     result = {'message': '', 'username': ''}
     nickname = request.form.get('nickname')
     login = request.form.get('login')
@@ -118,33 +153,16 @@ def registration() -> dict:
                 db.session.add(newUser)
                 db.session.commit()
 
-    print("{2} : {0}  {1}".format(login, password, nickname))
     return result
 
 
-@app.route('/logout', methods=['POST', 'GET'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('main'))
-
-
-# @app.after_request
-# def redirect_to_signin(response):
-#     if response.status_code == 401:
-#         return redirect(url_for('login_page') + '?next=' + request.url)
-#     return response
-
-
-# @app.route('/account/<username>', methods=['GET'])
-# @login_required
-# def user_page(username):
-#     return render_template('account.html')
-
 @app.route('/account', methods=['GET'])
-def user_page() -> dict:
-    """Returns a dictionary in which the **key is a parameter**,
-    and the **value is a list** from which you can select a variant of this parameter"""
-    name = current_user.nickname
-    info = {"username": name}
-    return info
+def user_page() -> Response | dict[str, Any]:
+    """Returns a dictionary in which the **key is a parameter**, and the
+    **value is a list** from which you can select a variant of this
+    parameter"""
+    if not session.get('logged_in'):
+        return jsonify({'message': 'Unauthorized'})
+
+    info = {"username": session.get('username'), "message": ""}
+    return jsonify(info)
