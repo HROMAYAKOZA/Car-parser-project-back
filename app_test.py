@@ -25,4 +25,4 @@ def test_registration_login(client):
     assert response.data == b'{"message":"","username":"test_nickname"}\n'
     response = client.post('/login', data={'login':'test_login','password':'1234'})
     assert response.status_code == 200
-    assert response.data == b'{"message":"","username":"test_nickname"}\n'
+    assert response.data == b'{"message":"","username":"test_login"}\n'

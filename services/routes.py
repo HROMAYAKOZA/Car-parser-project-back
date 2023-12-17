@@ -13,8 +13,8 @@ from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
 
-# Remove the comment if you want to fill in the database
-# insert_ad_to_Advertisement(cities, 10)
+if not Advertisement.query.limit(11).all():
+    insert_ad_to_Advertisement(cities, 10)
 cities_db = []
 brands = []
 models = []
