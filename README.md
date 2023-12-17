@@ -1,7 +1,7 @@
 # Car-parser-project
 Парсер сайтов с объявлениями о продажах машин.
 
-![ScreenShot](screenshot.jpg)
+![ScreenShot](screenshot.png)
 ## Репозиторий
 В данном репозитории находится бэкенд-состовляющая проекта.
 > Фронтенд часть находиться в [этом](https://github.com/karinaKarinakarinaKarina/buycarsite_front) репозитории.
