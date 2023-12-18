@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from flask import render_template, request, jsonify, \
+from flask import request, jsonify, \
     session, Response
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import current_user
 
 from services import app, db
 from services.models import Users, Advertisement
@@ -13,7 +12,7 @@ from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
 
-if not Advertisement.query.limit(11).all():
+if not Advertisement.query.first():
     insert_ad_to_Advertisement(cities, 10)
 cities_db = []
 brands = []
