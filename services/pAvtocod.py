@@ -1,11 +1,11 @@
 import unicodedata
 from bs4 import BeautifulSoup
 import re
-from services.pDrom import create_html, real_trans
+from services.pDrom import create_html, refactoringTRM
 
 
 def get_infoAvtocod(url: str) -> list:
-    """This function returns a list of all the site's ads **cars.avtocod.ru**"""
+    """This function returns a list of all the site's ads cars.avtocod.ru"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
     allCars = soup.findAll('div',
                            class_="cars-list__card cars-list__card--hoverable")
@@ -52,7 +52,7 @@ def get_infoAvtocod(url: str) -> list:
             else:
                 wd = "Нет информации"
                 transmission = m[1].strip()
-            transmission = real_trans(transmission)
+            transmission = refactoringTRM(transmission)
 
             href = car.find("div", class_="card-car-long").find("a").get(
                 "href").strip()
@@ -72,6 +72,7 @@ def get_infoAvtocod(url: str) -> list:
                         [brand, model, year, price, city, motor, transmission,
                          wd, km, href, img_url])
         except:
-            print("Error with connection \"{}\"".format(url))
+            print("WARNING: information could not be obtained from this link: "
+                  "\"{}\"".format(url))
     # print(info)
     return info

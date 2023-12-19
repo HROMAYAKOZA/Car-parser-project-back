@@ -9,6 +9,7 @@ msk = ["https://moscow.drom.ru/toyota/camry/page1/",
        "https://moscow.drom.ru/bmw/m4/page1/",
        "https://moscow.drom.ru/mercedes-benz/s-class/page1/",
        "https://moscow.drom.ru/mercedes-benz/e-class/page1/"]
+
 spb = ["https://spb.drom.ru/toyota/camry/page1/",
        "https://spb.drom.ru/toyota/corolla/page1/",
        "https://spb.drom.ru/nissan/x-trail/page1/",

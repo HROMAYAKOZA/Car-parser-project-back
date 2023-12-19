@@ -1,11 +1,11 @@
 import unicodedata
 
 from bs4 import BeautifulSoup
-from services.pDrom import create_html, real_trans, privod
+from services.pDrom import create_html, refactoringTRM, refactoringWD
 
 
 def get_infoAutograd(url: str) -> list:
-    """This function returns a list of all the site's ads **autograd-m.ru**"""
+    """This function returns a list of all the site's ads autograd-m.ru"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
     allCars = soup.findAll('article',
                            class_="catalog__item catalog__item--vertical grid"
@@ -34,9 +34,9 @@ def get_infoAutograd(url: str) -> list:
                                              components[4], components[5],
                                              components[7].lower())
             transmission = components[6].strip()
-            transmission = real_trans(transmission)
+            transmission = refactoringTRM(transmission)
             wd = components[10].strip()
-            wd = privod(wd)
+            wd = refactoringWD(wd)
             km = "{} {}".format(components[2], components[3])
 
             href = car.find("a").get("href")
@@ -52,6 +52,7 @@ def get_infoAutograd(url: str) -> list:
                 [brand, model, year, price, city, motor, transmission, wd, km,
                  href, img_url])
         except:
-            print("Error with connection \"{}\"".format(url))
+            print("WARNING: information could not be obtained from this link: "
+                  "\"{}\"".format(url))
     # print(info)
     return info

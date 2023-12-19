@@ -11,7 +11,7 @@ def create_html(url: str) -> Response:
     return html_code
 
 
-def real_trans(tr: str) -> str:
+def refactoringTRM(tr: str) -> str:
     tr = tr.lower()
     if tr == "вариатор":
         tr = "Вариатор"
@@ -24,19 +24,19 @@ def real_trans(tr: str) -> str:
     return tr
 
 
-def privod(priv: str) -> str:
-    priv = priv.lower()
-    if "передний" in priv:
-        priv = "Передний привод"
-    elif "задний" in priv:
-        priv = "Задний привод"
-    elif "полный" or "4wd" in priv:
-        priv = "Полный привод"
-    return priv
+def refactoringWD(wd: str) -> str:
+    wd = wd.lower()
+    if "передний" in wd:
+        wd = "Передний привод"
+    elif "задний" in wd:
+        wd = "Задний привод"
+    elif "полный" or "4wd" in wd:
+        wd = "Полный привод"
+    return wd
 
 
 def get_infoDrom(url: str) -> list:
-    """This function returns a list of all the site's ads **drom.ru**"""
+    """This function returns a list of all the site's ads drom.ru"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
     allCars = soup.findAll('a', class_="css-xb5nz8 e1huvdhj1")
     info = []
@@ -63,9 +63,9 @@ def get_infoDrom(url: str) -> list:
                 transmission += trs[1]
             else:
                 transmission += trs[0]
-            transmission = real_trans(transmission)
+            transmission = refactoringTRM(transmission)
             wd = components[3].strip()
-            wd = privod(wd)
+            wd = refactoringWD(wd)
             km = components[4].strip()
 
             href = car.get("href").strip()
@@ -86,5 +86,6 @@ def get_infoDrom(url: str) -> list:
                 [brand, model, year, price, city, motor, transmission, wd, km,
                  href, img_url])
         except:
-            print("Error with connection \"{}\"".format(url))
+            print("WARNING: information could not be obtained from this link: "
+                  "\"{}\"".format(url))
     return info

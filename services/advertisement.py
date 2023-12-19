@@ -1,76 +1,126 @@
-import base64
+import re
 
-import requests
 from bs4 import BeautifulSoup
 from requests import Response
 from sqlalchemy import Integer
-import re
 
+from services import app, db
+from services.models import Advertisement
 from services.pAutograd import get_infoAutograd
 from services.pAvtocod import get_infoAvtocod
-from services.models import Advertisement
 from services.pDrom import create_html, get_infoDrom
-from services import app, db
 
 
-def sorted_selectFromADS(brand, model, city, price_from, price_to):
-    """This function **selects the database fields** that match the input data"""
+def sorted_selectFromADS(brand, model, city, price_from, price_to,
+                         year, trans):
+    """This function selects the database fields that match the input data"""
+    if not price_from:
+        price_from = "0"
+    if not price_to:
+        price_to = "2000000000"
     if model != "All":
-        if price_from and price_to:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.model == model,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) >= int(price_from),
-                                             Advertisement.price.cast(
-                                                 Integer) <= int(
-                                                 price_to)).all()
-        elif price_to and not price_from:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.model == model,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) <= int(
-                                                 price_to)).all()
-        elif price_from and not price_to:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.model == model,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) >= int(
-                                                 price_from)).all()
+        if year:
+            if trans == "All":
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.model == model,
+                                                  Advertisement.city == city,
+                                                  Advertisement.year.cast(
+                                                      Integer) == int(year),
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
+            else:
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.model == model,
+                                                  Advertisement.city == city,
+                                                  Advertisement.year.cast(
+                                                      Integer) == int(year),
+                                                  Advertisement.transmission
+                                                  == trans,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
         else:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.model == model,
-                                             Advertisement.city == city).all()
+            if trans == "All":
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.model == model,
+                                                  Advertisement.city == city,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
+            else:
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.model == model,
+                                                  Advertisement.city == city,
+                                                  Advertisement.transmission
+                                                  == trans,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
     else:
-        if price_from and price_to:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) >= int(price_from),
-                                             Advertisement.price.cast(
-                                                 Integer) <= int(price_to))
-        elif price_to and not price_from:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) <= int(
-                                                 price_to)).all()
-        elif price_from and not price_to:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.city == city,
-                                             Advertisement.price.cast(
-                                                 Integer) >= int(
-                                                 price_from)).all()
+        if year:
+            if trans == "All":
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.city == city,
+                                                  Advertisement.year.cast(
+                                                      Integer) == int(year),
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
+            else:
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.city == city,
+                                                  Advertisement.year.cast(
+                                                      Integer) == int(year),
+                                                  Advertisement.transmission
+                                                  == trans,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
         else:
-            return Advertisement.query.filter(Advertisement.brand == brand,
-                                             Advertisement.city == city).all()
+            if trans == "All":
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.city == city,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
+            else:
+                return Advertisement.query.filter(Advertisement.brand == brand,
+                                                  Advertisement.city == city,
+                                                  Advertisement.transmission
+                                                  == trans,
+                                                  Advertisement.price.cast(
+                                                      Integer) >= int(
+                                                      price_from),
+                                                  Advertisement.price.cast(
+                                                      Integer) <= int(
+                                                      price_to)).all()
 
 
 def insert_ad_to_Advertisement(city_list, hmta) -> None:
-    """This function fills the **"Advertisement" table** with ads from sites **drom.ru; autograd-m.ru;
-    cars.avtocod.ru**"""
+    """This function fills the "Advertisement" table with ads from sites
+    drom.ru; autograd-m.ru; cars.avtocod.ru"""
     for city in city_list:
         count = 0
         for url in city:
@@ -99,7 +149,7 @@ def insert_ad_to_Advertisement(city_list, hmta) -> None:
 
 
 def get_statusAD(html: Response, url: str) -> BeautifulSoup:
-    """This is the function of **checking the ad for relevance**"""
+    """This is the function of checking the ad for relevance"""
     soup = BeautifulSoup(html.text, "html.parser")
     if re.findall(r".drom.ru/", url):
         status = soup.find("div", class_="e1jb3i2p0 css-14asbju e1u9wqx22")
@@ -113,7 +163,8 @@ def get_statusAD(html: Response, url: str) -> BeautifulSoup:
 
 
 def updatingADS() -> None:
-    """This function **removes** out-of-date ads and **replaces** them with up-to-date ones"""
+    """This function removes out-of-date ads and replaces them with
+    up-to-date ones"""
     app.app_context().push()
     ads = Advertisement.query.all()
     for ad in ads:

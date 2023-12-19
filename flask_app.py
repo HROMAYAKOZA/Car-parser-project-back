@@ -1,6 +1,5 @@
-from services import app, scheduler, db
-from services.href import cities
-from services.advertisement import updatingADS, insert_ad_to_Advertisement
+from services import app, scheduler
+from services.advertisement import updatingADS
 
 if __name__ == "__main__":
     scheduler.add_job(id='Task of updating the database', func=updatingADS,

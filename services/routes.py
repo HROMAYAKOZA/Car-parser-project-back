@@ -60,8 +60,8 @@ def main():
         trans = request.form.get('transmission')
         price_from = request.form.get('price_from')
         price_to = request.form.get('price_to')
-        ads = sorted_selectFromADS(brand, model, city,
-                                   price_from, price_to)
+        ads = sorted_selectFromADS(brand, model, city, price_from,
+                                   price_to, year, trans)
         InfoLists["ads"] = [{'id': item.id,
                              'brand': item.brand,
                              'model': item.model,
@@ -91,8 +91,8 @@ def car_page(ID):
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_page() -> dict:
-    """Returns a dictionary with an error message and the username of the
-    user.\n If the error message is empty in the dictionary,then the user is
+    """Returns a dictionary with an error message and the username of the user.
+    If the error message is empty in the dictionary,then the user is
     transferred to his account"""
     result = {'message': '', 'username': ''}
     login = request.form.get('login')
@@ -124,9 +124,9 @@ def logout():
 
 @app.route('/registration', methods=['POST', 'GET'])
 def registration() -> dict:
-    """Returns a **dictionary** with an **error message** and the
-    **username** of the user.\n If the error message **is empty** in the
-    dictionary, then the user is **successfully registered**"""
+    """Returns a dictionary with an error message and the username
+    of the user. If the error message is empty in the dictionary,
+    then the user is successfully registered"""
     result = {'message': '', 'username': ''}
     nickname = request.form.get('nickname')
     login = request.form.get('login')
@@ -157,8 +157,8 @@ def registration() -> dict:
 
 @app.route('/account', methods=['GET'])
 def user_page() -> Response | dict[str, Any]:
-    """Returns a dictionary in which the **key is a parameter**, and the
-    **value is a list** from which you can select a variant of this
+    """Returns a dictionary in which the key is a parameter**, and the
+    value is a list from which you can select a variant of this
     parameter"""
     if not session.get('logged_in'):
         return jsonify({'message': 'Unauthorized'})
