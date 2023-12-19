@@ -18,6 +18,8 @@ cities_db = []
 brands = []
 models = []
 transmissions = []
+models.append("All")
+transmissions.append("All")
 for ad in Advertisement.query.all():
     if not (ad.city in cities_db):
         cities_db.append(ad.city)
@@ -27,9 +29,6 @@ for ad in Advertisement.query.all():
         models.append(ad.model)
     if not (ad.transmission in transmissions):
         transmissions.append(ad.transmission)
-
-models.append("All")
-transmissions.append("All")
 
 InfoLists = {"cities": cities_db, "brands": brands,
              "models": models, "transmissions": transmissions}
