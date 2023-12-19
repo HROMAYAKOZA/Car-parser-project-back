@@ -17,7 +17,6 @@ if not Advertisement.query.first():
 cities_db = []
 brands = []
 models = []
-years = []
 transmissions = []
 for ad in Advertisement.query.all():
     if not (ad.city in cities_db):
@@ -26,13 +25,14 @@ for ad in Advertisement.query.all():
         brands.append(ad.brand)
     if not (ad.model in models):
         models.append(ad.model)
-    if not (ad.year in years):
-        years.append(ad.year)
     if not (ad.transmission in transmissions):
         transmissions.append(ad.transmission)
 
-InfoLists = {"cities": cities_db, "brands": brands, "models": models,
-             "years": years, "transmissions": transmissions}
+models.append("All")
+transmissions.append("All")
+
+InfoLists = {"cities": cities_db, "brands": brands,
+             "models": models, "transmissions": transmissions}
 
 
 @app.route('/', methods=['GET', 'POST'])
