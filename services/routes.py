@@ -93,16 +93,12 @@ def login_page() -> dict:
     """Returns a dictionary with an error message and the username of the user.
     If the error message is empty in the dictionary,then the user is
     transferred to his account"""
-    result = {'message': '', 'username': ''}
+    result = {'message': '', 'nickname': ''}
     login = request.form.get('login')
     password = request.form.get('password')
     if login and password:
         user = Users.query.filter_by(login=login).first()
         if user and check_password_hash(user.password, password):
-            session['logged_in'] = True
-            session['username'] = login
-            session.permanent = True
-
             result['login'] = login
             result['nickname'] = user.nickname
             result['id'] = user.id
@@ -115,20 +111,12 @@ def login_page() -> dict:
     return result
 
 
-@app.route('/logout', methods=['POST'])
-def logout():
-    session.pop('logged_in', None)
-    session.pop('username', None)
-
-    return jsonify({'message': 'Logout successful'}), 200
-
-
 @app.route('/registration', methods=['POST', 'GET'])
 def registration() -> dict:
     """Returns a dictionary with an error message and the username
     of the user. If the error message is empty in the dictionary,
     then the user is successfully registered"""
-    result = {'message': '', 'username': ''}
+    result = {'message': '', 'nickname': ''}
     nickname = request.form.get('nickname')
     login = request.form.get('login')
     password = request.form.get('password')
@@ -146,7 +134,7 @@ def registration() -> dict:
             if user:
                 result['message'] = "Этот логин уже занят"
             else:
-                result['username'] = nickname
+                result['nickname'] = nickname
                 hash_password = generate_password_hash(password)
                 newUser = Users(nickname=nickname, login=login,
                                 password=hash_password)
@@ -162,5 +150,5 @@ def user_page(userID) -> Response | dict[str, Any]:
     value is a list from which you can select a variant of this
     parameter"""
     user = Users.query.filter_by(id=userID).first()
-    result = {'username': user.nickname}
+    result = {'nickname': user.nickname}
     return jsonify(result)
