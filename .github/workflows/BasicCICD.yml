@@ -42,12 +42,11 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest app_test.py
+        pytest app_test.py -v
 
 #   deploy:
 #     needs: build
 #     runs-on: ubuntu-latest
 #     steps:
 #     - name: Deploy to production
-#       # Add your deployment steps here
 #       run: echo "Deployment step"

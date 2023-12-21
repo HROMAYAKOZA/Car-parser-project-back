@@ -30,8 +30,12 @@ def test_registration_login(client):
                                                   'password': '1234',
                                                   'password2': '1234'})
     assert response.status_code == 200
-    assert response.data == b'{"message":"","username":"test_nickname"}\n'
+    assert response.data == b'{"message":"","nickname":"test_nickname"}\n'
     response = client.post('/login',
                            data={'login': 'test_login', 'password': '1234'})
     assert response.status_code == 200
-    assert response.data == b'{"message":"","username":"test_login"}\n'
+    assert response.data == b'{"id":1,"login":"test_login",\
+"message":"","nickname":"test_nickname"}\n'
+    response = client.get('/account/1')
+    assert response.status_code == 200
+    assert response.data == b'{"nickname":"test_nickname"}\n'
