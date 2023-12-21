@@ -103,7 +103,9 @@ def login_page() -> dict:
             session['username'] = login
             session.permanent = True
 
-            result['username'] = login
+            result['login'] = login
+            result['nickname'] = user.nickname
+            result['id'] = user.id
             return result
         else:
             result['message'] = "Неверный логин или пароль"
@@ -154,13 +156,11 @@ def registration() -> dict:
     return result
 
 
-@app.route('/account', methods=['GET'])
-def user_page() -> Response | dict[str, Any]:
+@app.route('/account/<userID>', methods=['GET'])
+def user_page(userID) -> Response | dict[str, Any]:
     """Returns a dictionary in which the key is a parameter**, and the
     value is a list from which you can select a variant of this
     parameter"""
-    if not session.get('logged_in'):
-        return jsonify({'message': 'Unauthorized'})
-
-    info = {"username": session.get('username'), "message": ""}
-    return jsonify(info)
+    user = Users.query.filter_by(id=userID).first()
+    result = {'username': user.nickname}
+    return jsonify(result)
