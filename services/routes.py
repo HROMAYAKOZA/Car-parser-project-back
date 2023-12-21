@@ -7,7 +7,7 @@ from flask import request, jsonify, \
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from services import app, db
-from services.models import Users, Advertisement
+from services.models import Users, Advertisement, UserAd
 from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
@@ -88,6 +88,17 @@ def car_page(ID):
     return jsonify(result)
 
 
+@app.route('/setAdInUser/<UserID>/<AdID>', methods=['GET'])
+def setAdInUser(UserID, AdID):
+    flag = UserAd.query.filter_by(user_id=UserID, ad_id=AdID).first()
+    if not flag:
+        newAd = UserAd(user_id=UserID, ad_id=AdID)
+        db.session.add(newAd)
+        db.session.commit()
+
+    return {'result': 'Successfully'}
+
+
 @app.route('/login', methods=['POST', 'GET'])
 def login_page() -> dict:
     """Returns a dictionary with an error message and the username of the user.
@@ -150,5 +161,18 @@ def user_page(userID) -> Response | dict[str, Any]:
     value is a list from which you can select a variant of this
     parameter"""
     user = Users.query.filter_by(id=userID).first()
-    result = {'nickname': user.nickname}
+    UA_query = UserAd.query.filter(UserAd.user_id == userID).all()
+    favorites = []
+    for item in UA_query:
+        advert = Advertisement.query.filter(
+            Advertisement.id == item.ad_id).first()
+        temp = {'id': advert.id, 'price': advert.price,
+                'brand': advert.brand, 'model': advert.model,
+                'year': advert.year, 'km': advert.km, 'image': advert.img_url,
+                'motor': advert.motor, 'transmission': advert.transmission,
+                'wd': advert.wd, 'href': advert.href}
+
+        favorites.append(temp)
+
+    result = {'nickname': user.nickname, 'favorites': favorites}
     return jsonify(result)

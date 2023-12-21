@@ -19,6 +19,14 @@ class Advertisement(db.Model):
     img_url = db.Column(db.String(256), nullable=False)
 
 
+class UserAd(db.Model):
+    __tablename__ = 'user_ad'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                        primary_key=True)
+    ad_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'),
+                      primary_key=True)
+
+
 class Users(db.Model, UserMixin):
     """This class is a users table"""
     id = db.Column(db.Integer, primary_key=True)
