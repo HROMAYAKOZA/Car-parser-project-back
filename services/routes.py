@@ -11,6 +11,7 @@ from services.models import Users, Advertisement, UserAd
 from services.href import cities
 from services.advertisement import sorted_selectFromADS, \
     insert_ad_to_Advertisement
+from services.users import changeParOfUser, selectAdsOfUser
 
 if not Advertisement.query.first():
     insert_ad_to_Advertisement(cities, 10)
@@ -161,18 +162,14 @@ def user_page(userID) -> Response | dict[str, Any]:
     value is a list from which you can select a variant of this
     parameter"""
     user = Users.query.filter_by(id=userID).first()
-    UA_query = UserAd.query.filter(UserAd.user_id == userID).all()
-    favorites = []
-    for item in UA_query:
-        advert = Advertisement.query.filter(
-            Advertisement.id == item.ad_id).first()
-        temp = {'id': advert.id, 'price': advert.price,
-                'brand': advert.brand, 'model': advert.model,
-                'year': advert.year, 'km': advert.km, 'image': advert.img_url,
-                'motor': advert.motor, 'transmission': advert.transmission,
-                'wd': advert.wd, 'href': advert.href}
-
-        favorites.append(temp)
-
+    favorites = selectAdsOfUser(userID)
     result = {'nickname': user.nickname, 'favorites': favorites}
     return jsonify(result)
+
+
+@app.route('/account/<userID>/changeParams', methods=['GET'])
+def userChangeParams(userID):
+    nickname = request.form.get('nickname')
+    login = request.form.get('login')
+    changeParOfUser(userID, nickname, login)
+    return {'result': 'Successfully'}
