@@ -38,4 +38,4 @@ def test_registration_login(client):
 "message":"","nickname":"test_nickname"}\n'
     response = client.get('/account/1')
     assert response.status_code == 200
-    assert response.data == b'{"nickname":"test_nickname"}\n'
+    assert response.data == b'{"favorites":[],"nickname":"test_nickname"}\n'
