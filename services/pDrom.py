@@ -38,7 +38,7 @@ def refactoringWD(wd: str) -> str:
 def get_infoDrom(url: str) -> list:
     """This function returns a list of all the site's ads drom.ru"""
     soup = BeautifulSoup(create_html(url).text, "html.parser")
-    allCars = soup.findAll('a', class_="css-xb5nz8 e1huvdhj1")
+    allCars = soup.findAll('a', class_="css-1oas0dk e1huvdhj1")
     info = []
     for car in allCars:
         try:
