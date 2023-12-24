@@ -12,4 +12,4 @@ COPY .env /app
 
 EXPOSE 5000 5000
 
-CMD [ "flask", "--app", "flask_app", "run", "--host=0.0.0.0", "--port", "5000" ]
+CMD [ "python", "flask_app.py" ]

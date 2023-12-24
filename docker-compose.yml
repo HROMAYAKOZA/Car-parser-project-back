@@ -18,6 +18,8 @@ services:
     build: .
     depends_on:
       - database
+    environment:
+      WAITRESS_DEBUG: 1
     ports:
       - "5000:5000"
     networks:

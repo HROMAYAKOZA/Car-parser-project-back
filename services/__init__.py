@@ -11,6 +11,7 @@ postgresql_password = os.getenv("POSTGRES_PASSWORD")
 host_name = os.getenv("HOST_NAME")
 secret_key = os.getenv("SECRET_KEY")
 app = Flask(__name__)
+app.debug=True
 CORS(app)
 app.secret_key = secret_key
 app.app_context().push()
