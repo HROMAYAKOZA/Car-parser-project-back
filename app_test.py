@@ -22,6 +22,9 @@ def test_routes(client):
     response = client.get('/')
     assert response.status_code == 200
     assert b'Hummer' in response.data
+    response = client.get('/advertisement/1')
+    assert response.status_code == 200
+    assert b'"id":1' in response.data
 
 
 def test_registration_login(client):
