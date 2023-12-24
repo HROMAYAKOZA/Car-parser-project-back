@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from flask import request, jsonify, \
-    session, Response
+from flask import request, jsonify, Response
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from services import app, db
@@ -37,11 +36,6 @@ InfoLists = {"cities": cities_db, "brands": brands,
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    print(session.get('logged_in'))
-    if session.get('logged_in'):
-        InfoLists["auth"] = "TRUE"
-    else:
-        InfoLists["auth"] = "FALSE"
     if request.method == 'GET':
         ads = Advertisement.query.limit(11).all()
         InfoLists["ads"] = [{'id': item.id,
@@ -89,6 +83,15 @@ def car_page(ID):
     return jsonify(result)
 
 
+@app.route('/selectFavoriteAds/<UserID>', methods=['GET', 'POST'])
+def selectFavoriteAds(UserID):
+    query = UserAd.query.filter_by(user_id=UserID).all()
+    favoriteAds = []
+    for i in query:
+        favoriteAds.append(i.ad_id)
+    return jsonify({'favoriteAds': favoriteAds})
+
+
 @app.route('/setAdInUser/<UserID>/<AdID>', methods=['GET'])
 def setAdInUser(UserID, AdID):
     flag = UserAd.query.filter_by(user_id=UserID, ad_id=AdID).first()
@@ -97,6 +100,15 @@ def setAdInUser(UserID, AdID):
         db.session.add(newAd)
         db.session.commit()
 
+    return {'result': 'Successfully'}
+
+
+@app.route('/deleteAdOfUser/<UserID>/<AdID>', methods=['GET'])
+def deleteAdOfUser(UserID, AdID):
+    pair = UserAd.query.filter_by(user_id=UserID, ad_id=AdID).first()
+    if pair:
+        db.session.delete(pair)
+        db.session.commit()
     return {'result': 'Successfully'}
 
 
@@ -119,7 +131,6 @@ def login_page() -> dict:
             result['message'] = "Неверный логин или пароль"
     else:
         result['message'] = "Пожалуйста, введите логин и пароль"
-    print("Login: {0}  {1}".format(login, password))
     return result
 
 
@@ -167,9 +178,9 @@ def user_page(userID) -> Response | dict[str, Any]:
     return jsonify(result)
 
 
-@app.route('/account/<userID>/changeParams', methods=['GET'])
+@app.route('/account/<userID>/changeParams', methods=['GET', 'POST'])
 def userChangeParams(userID):
-    nickname = request.form.get('nickname')
-    login = request.form.get('login')
-    changeParOfUser(userID, nickname, login)
-    return {'result': 'Successfully'}
+    nickname = request.form.get('newName')
+    login = request.form.get('newLogin')
+    result = changeParOfUser(userID, nickname, login)
+    return jsonify(result)

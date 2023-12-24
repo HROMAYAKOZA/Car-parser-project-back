@@ -1,3 +1,5 @@
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from services import db
 from services.models import Users, UserAd, Advertisement
 
@@ -21,12 +23,23 @@ def selectAdsOfUser(userID):
 
 def changeParOfUser(userID, nickname, login):
     """Changes the user's login and nickname"""
+    result = {'message': ""}
     user = Users.query.filter_by(id=userID).first()
     if not nickname:
         nickname = user.nickname
     if not login:
         login = user.login
-    user.nickname = nickname
-    user.login = login
+    else:
+        if ' ' in list(login):
+            result['message'] = "Логин не должен содержать пробела"
+        else:
+            user = Users.query.filter_by(login=login).first()
+            if user:
+                result['message'] = "Этот логин уже занят"
+    if result['message'] == "":
+        mainUser = Users.query.filter_by(id=userID).first()
+        mainUser.nickname = nickname
+        mainUser.login = login
 
-    db.session.commit()
+        db.session.commit()
+    return result
