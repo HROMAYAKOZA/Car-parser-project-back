@@ -92,6 +92,23 @@ def selectFavoriteAds(UserID):
     return jsonify({'favoriteAds': favoriteAds})
 
 
+@app.route('/selectFavoriteAdsALL/<UserID>', methods=['GET', 'POST'])
+def selectFavoriteAdsALL(UserID):
+    query = UserAd.query.filter_by(user_id=UserID).all()
+    Ads = []
+    for i in query:
+        Ads.append(Advertisement.query.filter_by(id=i.ad_id).first())
+    favoriteAds = [{'id': item.id,
+                    'brand': item.brand,
+                    'model': item.model,
+                    'year': item.year,
+                    'price': item.price,
+                    'href': item.href,
+                    'image': item.img_url} for item in Ads]
+
+    return jsonify({'favoriteAds': favoriteAds})
+
+
 @app.route('/setAdInUser/<UserID>/<AdID>', methods=['GET'])
 def setAdInUser(UserID, AdID):
     flag = UserAd.query.filter_by(user_id=UserID, ad_id=AdID).first()
