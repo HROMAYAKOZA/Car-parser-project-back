@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 
 from services import db, manager
 
@@ -17,6 +18,8 @@ class Advertisement(db.Model):
     km = db.Column(db.String(128), nullable=False)
     href = db.Column(db.String(256), nullable=False)
     img_url = db.Column(db.String(256), nullable=False)
+    user_ads = relationship('UserAd', back_populates='advertisement',
+                            cascade='all, delete-orphan')
 
 
 class UserAd(db.Model):
@@ -25,6 +28,8 @@ class UserAd(db.Model):
                         primary_key=True)
     ad_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'),
                       primary_key=True)
+    advertisement = relationship('Advertisement',
+                                 back_populates='user_ads')
 
 
 class Users(db.Model, UserMixin):

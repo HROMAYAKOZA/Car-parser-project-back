@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_apscheduler import APScheduler
 import os
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 postgresql_password = os.getenv("POSTGRES_PASSWORD")
@@ -14,6 +15,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = secret_key
 app.app_context().push()
+# time.sleep(15) # wait for PSQL start
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:{}@{}:5432/carParser' \
     .format(postgresql_password, host_name)
